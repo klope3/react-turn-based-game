@@ -1,0 +1,9 @@
+.character {
+  position: absolute;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: lightgreen;
+  translate: -50% -50%;
+  z-index: 10;
+}
