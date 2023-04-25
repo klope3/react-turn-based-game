@@ -1,4 +1,5 @@
 export type GameState = {
+  selectedCellIndex: number | undefined;
   activeCharacters: CharacterData[];
 };
 

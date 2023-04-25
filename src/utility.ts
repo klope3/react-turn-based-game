@@ -9,3 +9,10 @@ export function boardCoordsToPxOffset(coordinates: Coordinates) {
     top: coordinates.y * cellSize + cellSize / 2,
   };
 }
+
+export function flatIndexToCoords(index: number, gridWidth: number) {
+  return {
+    x: index % gridWidth,
+    y: Math.floor(index / gridWidth),
+  };
+}
