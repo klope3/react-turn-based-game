@@ -7,3 +7,4 @@ export type BasicAction = Action & {
 };
 
 export const CLICK_CELL = "clickCell";
+export const MOVE_PLAYER = "movePlayer";

@@ -1,13 +1,13 @@
 import { CharacterData } from "../../types/gameStateTypes";
-import { boardCoordsToPxOffset } from "../../utility";
+import { cellIndexToPxOffset } from "../../utility";
 import "./Character.css";
 
 type CharacterProps = {
   data: CharacterData;
 };
 
-export function Character({ data: { coordinates } }: CharacterProps) {
-  const pxOffset = boardCoordsToPxOffset(coordinates);
+export function Character({ data: { curCellIndex } }: CharacterProps) {
+  const pxOffset = cellIndexToPxOffset(curCellIndex);
   const style = {
     left: `${pxOffset.left}px`,
     top: `${pxOffset.top}px`,

@@ -1,23 +1,22 @@
 import "./App.css";
 import { Character } from "./components/Character/Character";
 import { Grid } from "./components/Grid/Grid";
-import { displayWidth, playerHealthStart } from "./constants";
-import { CharacterData } from "./types/gameStateTypes";
-
-const defaultPlayer: CharacterData = {
-  coordinates: { x: 2, y: 3 },
-  health: playerHealthStart,
-};
+import { displayWidth } from "./constants";
+import { useSelector } from "react-redux/es/exports";
+import { GameState } from "./types/gameStateTypes";
 
 function App() {
   const style = {
     maxWidth: `${displayWidth}px`,
   };
+  const characters = useSelector((state: GameState) => state.activeCharacters);
 
   return (
     <>
       <div className="board-container" style={style}>
-        <Character data={defaultPlayer} />
+        {characters.map((char) => (
+          <Character data={char} />
+        ))}
         <Grid />
       </div>
     </>

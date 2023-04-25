@@ -4,7 +4,8 @@ export type GameState = {
 };
 
 export type CharacterData = {
-  coordinates: Coordinates;
+  type: CharacterType;
+  curCellIndex: number;
   health: number;
 };
 
@@ -12,3 +13,5 @@ export type Coordinates = {
   x: number;
   y: number;
 };
+
+export type CharacterType = "player" | "enemy";
