@@ -9,6 +9,11 @@ const initialState: GameState = {
       health: playerHealthStart,
       curCellIndex: 26,
     },
+    {
+      type: "enemy",
+      health: 1,
+      curCellIndex: 28,
+    },
   ],
   selectedCellIndex: undefined,
 };
