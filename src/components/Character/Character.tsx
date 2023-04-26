@@ -1,3 +1,4 @@
+import { actionTimeDefault } from "../../constants";
 import { CharacterData } from "../../types/gameStateTypes";
 import { cellIndexToPxOffset } from "../../utility";
 import "./Character.css";
@@ -11,6 +12,7 @@ export function Character({ data: { curCellIndex, type } }: CharacterProps) {
   const style = {
     left: `${pxOffset.left}px`,
     top: `${pxOffset.top}px`,
+    transition: `${actionTimeDefault}s`,
   };
 
   return <div className={`character ${type}`} style={style}></div>;

@@ -1,8 +1,17 @@
-import { gameBoardCellsX, gameBoardCellsY } from "../../constants";
+import {
+  actionTimeDefault,
+  gameBoardCellsX,
+  gameBoardCellsY,
+} from "../../constants";
 import { Cell } from "./Cell";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import "./Grid.css";
-import { clickCell, movePlayer } from "../../redux/gameActions";
+import {
+  clickCell,
+  enemyTurn,
+  movePlayer,
+  toggleInput,
+} from "../../redux/gameActions";
 import { GameState } from "../../types/gameStateTypes";
 import { getTaxicabDistance, usePlayer } from "../../utility";
 
@@ -16,9 +25,12 @@ export function Grid() {
   const selectedCellIndex = useSelector(
     (state: GameState) => state.selectedCellIndex
   );
+  const userInput = useSelector((state: GameState) => state.userInput);
   const player = usePlayer();
 
   function clickGrid(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    if (!userInput) return;
+
     const target = e.target as HTMLElement;
     if (target.dataset === undefined || target.dataset.cellindex === undefined)
       return;
@@ -32,6 +44,12 @@ export function Grid() {
       1;
     if (clickedAgain && adjacentToPlayer) {
       dispatch(movePlayer(clickedIndex));
+      setTimeout(() => {
+        dispatch(enemyTurn());
+      }, actionTimeDefault * 1000);
+      setTimeout(() => {
+        dispatch(toggleInput());
+      }, actionTimeDefault * 1000 * 2);
     } else {
       dispatch(clickCell(clickedIndex));
     }

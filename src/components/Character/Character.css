@@ -6,7 +6,6 @@
   background-color: lightgray;
   translate: -50% -50%;
   z-index: 10;
-  transition: 0.2s;
 }
 
 .character.player {

@@ -1,6 +1,6 @@
 import { displayWidth, gameBoardCellsX } from "./constants";
 import { useSelector } from "react-redux/es/exports";
-import { GameState } from "./types/gameStateTypes";
+import { Coordinates, GameState } from "./types/gameStateTypes";
 
 export function cellIndexToPxOffset(cellIndex: number) {
   const coordinates = flatIndexToCoords(cellIndex, gameBoardCellsX);
@@ -12,11 +12,15 @@ export function cellIndexToPxOffset(cellIndex: number) {
   };
 }
 
-function flatIndexToCoords(index: number, gridWidth: number) {
+export function flatIndexToCoords(index: number, gridWidth: number) {
   return {
     x: index % gridWidth,
     y: Math.floor(index / gridWidth),
   };
+}
+
+export function coordsToFlatIndex(coords: Coordinates, gridWidth: number) {
+  return coords.y * gridWidth + coords.x;
 }
 
 export function getTaxicabDistance(
