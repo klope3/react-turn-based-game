@@ -2,6 +2,12 @@ import { displayWidth, gameBoardCellsX } from "./constants";
 import { useSelector } from "react-redux/es/exports";
 import { Coordinates, GameState } from "./types/gameStateTypes";
 
+let idCounter = 0;
+export function getNewId() {
+  idCounter++;
+  return idCounter;
+}
+
 export function cellIndexToPxOffset(cellIndex: number) {
   const coordinates = flatIndexToCoords(cellIndex, gameBoardCellsX);
   const cellSize = displayWidth / gameBoardCellsX;

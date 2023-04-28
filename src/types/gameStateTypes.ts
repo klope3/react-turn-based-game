@@ -9,6 +9,7 @@ export type CharacterData = {
   type: CharacterType;
   curCellIndex: number;
   health: number;
+  id: number;
 };
 
 export type Coordinates = {

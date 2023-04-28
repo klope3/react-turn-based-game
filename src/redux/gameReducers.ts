@@ -13,23 +13,26 @@ import {
   MOVE_PLAYER,
 } from "../types/actionTypes";
 import { Cell, CharacterData, GameState } from "../types/gameStateTypes";
-import { coordsToFlatIndex, flatIndexToCoords } from "../utility";
+import { coordsToFlatIndex, flatIndexToCoords, getNewId } from "../utility";
 
 const initialCharacters: CharacterData[] = [
   {
     type: "player",
     health: playerHealthStart,
     curCellIndex: 26,
+    id: getNewId(),
   },
   {
     type: "enemy",
     health: 1,
     curCellIndex: 28,
+    id: getNewId(),
   },
   {
     type: "enemy",
     health: 1,
     curCellIndex: 20,
+    id: getNewId(),
   },
 ];
 const initialCells: Cell[] = Array.from(
@@ -72,9 +75,21 @@ export function gameReducer(
       newCharacters[playerIndex] = newPlayer;
       const playerPrevCellIndex = newPlayer.curCellIndex;
       const playerTargetCellIndex = action.value;
-      newPlayer.curCellIndex = playerTargetCellIndex;
 
       const newCells = [...state.cells];
+      const characterOccupyingTarget = newCharacters.find(
+        (char) => char.curCellIndex === playerTargetCellIndex
+      );
+      if (characterOccupyingTarget) {
+        newCharacters.splice(
+          newCharacters.indexOf(characterOccupyingTarget),
+          1
+        );
+        console.log("killed:");
+        console.log(characterOccupyingTarget);
+      }
+
+      newPlayer.curCellIndex = playerTargetCellIndex;
       newCells[playerPrevCellIndex].characterHere = undefined;
       newCells[playerTargetCellIndex].characterHere = newPlayer;
 

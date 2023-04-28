@@ -15,7 +15,7 @@ function App() {
     <>
       <div className="board-container" style={style}>
         {characters.map((char) => (
-          <Character data={char} />
+          <Character key={char.id} data={char} />
         ))}
         <Grid />
       </div>
