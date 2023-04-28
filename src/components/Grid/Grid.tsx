@@ -13,7 +13,7 @@ import {
   toggleInput,
 } from "../../redux/gameActions";
 import { GameState } from "../../types/gameStateTypes";
-import { getTaxicabDistance, usePlayer } from "../../utility";
+import { areCellsAdjacent, usePlayer } from "../../utility";
 
 export function Grid() {
   const g = Array.from({ length: gameBoardCellsX * gameBoardCellsY }, (_) => 0);
@@ -39,9 +39,13 @@ export function Grid() {
     if (!player) return;
 
     const clickedAgain = clickedIndex === selectedCellIndex;
-    const adjacentToPlayer =
-      getTaxicabDistance(player.curCellIndex, clickedIndex, gameBoardCellsX) ===
-      1;
+    const adjacentToPlayer = areCellsAdjacent(
+      player.curCellIndex,
+      clickedIndex,
+      gameBoardCellsX,
+      true
+    );
+
     if (clickedAgain && adjacentToPlayer) {
       dispatch(movePlayer(clickedIndex));
       setTimeout(() => {

@@ -39,6 +39,18 @@ const initialCharacters: CharacterData[] = [
     curCellIndex: 20,
     id: getNewId(),
   },
+  {
+    type: "enemy",
+    health: 1,
+    curCellIndex: 9,
+    id: getNewId(),
+  },
+  {
+    type: "enemy",
+    health: 1,
+    curCellIndex: 34,
+    id: getNewId(),
+  },
 ];
 const initialCells: Cell[] = Array.from(
   { length: gameBoardCellsX * gameBoardCellsY },
@@ -122,6 +134,9 @@ function doEnemyTurn(state: GameState): GameState {
 
   const newState = { ...state };
   const newCharacters = [...newState.activeCharacters];
+  const newPlayer = { ...player };
+  const newPlayerIndex = newCharacters.indexOf(player);
+  newCharacters[newPlayerIndex] = newPlayer;
   const newCells = [...newState.cells];
   const playerCoords = flatIndexToCoords(player.curCellIndex, gameBoardCellsX);
   const walkableGrid = getEnemyWalkableGrid(state.cells);
@@ -140,11 +155,7 @@ function doEnemyTurn(state: GameState): GameState {
     ) {
       console.log("player attacked by character:");
       console.log(enemy);
-      const playerCharacterIndex = newCharacters.indexOf(player);
-      newCharacters[playerCharacterIndex] = {
-        ...player,
-        health: player.health - 1,
-      };
+      newPlayer.health--;
       const curCoords = flatIndexToCoords(enemyStartCellIndex, gameBoardCellsX);
       walkableGrid[curCoords.x][curCoords.y] = false;
       continue;

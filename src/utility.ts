@@ -36,7 +36,13 @@ export function getTaxicabDistance(
 ) {
   const { x: x1, y: y1 } = flatIndexToCoords(cellIndex1, gridWidth);
   const { x: x2, y: y2 } = flatIndexToCoords(cellIndex2, gridWidth);
-  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+  const deltaX = Math.abs(x1 - x2);
+  const deltaY = Math.abs(y1 - y2);
+  return {
+    distance: deltaX + deltaY,
+    deltaX,
+    deltaY,
+  };
 }
 
 export function usePlayer() {
@@ -48,8 +54,13 @@ export function usePlayer() {
 export function areCellsAdjacent(
   cellIndex1: number,
   cellIndex2: number,
-  gridWidth: number
+  gridWidth: number,
+  allowDiagonal: boolean = false
 ) {
-  //currently only orthogonal is considered adjacent
-  return getTaxicabDistance(cellIndex1, cellIndex2, gridWidth) === 1;
+  const { distance, deltaX, deltaY } = getTaxicabDistance(
+    cellIndex1,
+    cellIndex2,
+    gridWidth
+  );
+  return distance === 1 || (allowDiagonal && deltaX === 1 && deltaY === 1);
 }
