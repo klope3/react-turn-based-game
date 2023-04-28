@@ -44,3 +44,12 @@ export function usePlayer() {
     state.activeCharacters.find((char) => char.type === "player")
   );
 }
+
+export function areCellsAdjacent(
+  cellIndex1: number,
+  cellIndex2: number,
+  gridWidth: number
+) {
+  //currently only orthogonal is considered adjacent
+  return getTaxicabDistance(cellIndex1, cellIndex2, gridWidth) === 1;
+}

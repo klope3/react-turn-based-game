@@ -10,6 +10,7 @@ function App() {
     maxWidth: `${displayWidth}px`,
   };
   const characters = useSelector((state: GameState) => state.activeCharacters);
+  const player = characters.find((char) => char.type === "player");
 
   return (
     <>
@@ -18,6 +19,7 @@ function App() {
           <Character key={char.id} data={char} />
         ))}
         <Grid />
+        {player && <div>Player Health: {player.health}</div>}
       </div>
     </>
   );

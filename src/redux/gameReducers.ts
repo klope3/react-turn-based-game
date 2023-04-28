@@ -13,7 +13,12 @@ import {
   MOVE_PLAYER,
 } from "../types/actionTypes";
 import { Cell, CharacterData, GameState } from "../types/gameStateTypes";
-import { coordsToFlatIndex, flatIndexToCoords, getNewId } from "../utility";
+import {
+  areCellsAdjacent,
+  coordsToFlatIndex,
+  flatIndexToCoords,
+  getNewId,
+} from "../utility";
 
 const initialCharacters: CharacterData[] = [
   {
@@ -126,6 +131,24 @@ function doEnemyTurn(state: GameState): GameState {
 
     const enemy = newCharacters[i];
     const enemyStartCellIndex = enemy.curCellIndex;
+    if (
+      areCellsAdjacent(
+        enemyStartCellIndex,
+        player.curCellIndex,
+        gameBoardCellsX
+      )
+    ) {
+      console.log("player attacked by character:");
+      console.log(enemy);
+      const playerCharacterIndex = newCharacters.indexOf(player);
+      newCharacters[playerCharacterIndex] = {
+        ...player,
+        health: player.health - 1,
+      };
+      const curCoords = flatIndexToCoords(enemyStartCellIndex, gameBoardCellsX);
+      walkableGrid[curCoords.x][curCoords.y] = false;
+      continue;
+    }
     const start = flatIndexToCoords(enemyStartCellIndex, gameBoardCellsX);
     const path = findPath(walkableGrid, start, playerCoords);
     if (!path || path.length < 2) continue;
