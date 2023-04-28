@@ -192,6 +192,9 @@ function doEnemyTurn(state: GameState): GameState {
       characterHere: newEnemy,
     };
   }
+  if (newPlayer.health <= 0) {
+    newCharacters.splice(newPlayerIndex, 1);
+  }
   newState.activeCharacters = newCharacters;
   newState.cells = newCells;
 

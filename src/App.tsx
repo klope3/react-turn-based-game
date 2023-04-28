@@ -20,6 +20,7 @@ function App() {
         ))}
         <Grid />
         {player && <div>Player Health: {player.health}</div>}
+        {!player && <div>GAME OVER</div>}
       </div>
     </>
   );
