@@ -61,6 +61,8 @@ const initialCells: Cell[] = Array.from(
 initialCells[26].characterHere = initialCharacters[0];
 initialCells[28].characterHere = initialCharacters[1];
 initialCells[20].characterHere = initialCharacters[2];
+initialCells[9].characterHere = initialCharacters[3];
+initialCells[34].characterHere = initialCharacters[4];
 const initialState: GameState = {
   activeCharacters: initialCharacters,
   selectedCellIndex: undefined,
@@ -157,7 +159,7 @@ function doEnemyTurn(state: GameState): GameState {
       console.log(enemy);
       newPlayer.health--;
       const curCoords = flatIndexToCoords(enemyStartCellIndex, gameBoardCellsX);
-      walkableGrid[curCoords.x][curCoords.y] = false;
+      walkableGrid[curCoords.y][curCoords.x] = false;
       continue;
     }
     const start = flatIndexToCoords(enemyStartCellIndex, gameBoardCellsX);
@@ -171,6 +173,7 @@ function doEnemyTurn(state: GameState): GameState {
     );
     const targetCoords =
       firstStepCellIndex === player.curCellIndex ? path[0] : firstStepCoords;
+    walkableGrid[start.y][start.x] = true;
     walkableGrid[targetCoords.y][targetCoords.x] = false;
     const targetIndex = coordsToFlatIndex(targetCoords, gameBoardCellsX);
     const enemyNewCellIndex =
@@ -190,6 +193,7 @@ function doEnemyTurn(state: GameState): GameState {
     };
   }
   newState.activeCharacters = newCharacters;
+  newState.cells = newCells;
 
   return newState;
 }
