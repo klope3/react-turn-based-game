@@ -1,11 +1,9 @@
+import { useDispatch, useSelector } from "react-redux/es/exports";
 import {
   actionTimeDefault,
   gameBoardCellsX,
   gameBoardCellsY,
 } from "../../constants";
-import { Cell } from "./Cell";
-import { useDispatch, useSelector } from "react-redux/es/exports";
-import "./Grid.css";
 import {
   clickCell,
   enemyTurn,
@@ -14,6 +12,8 @@ import {
 } from "../../redux/gameActions";
 import { GameState } from "../../types/gameStateTypes";
 import { areCellsAdjacent, usePlayer } from "../../utility";
+import { Cell } from "./Cell";
+import "./Grid.css";
 
 export function Grid() {
   const g = Array.from({ length: gameBoardCellsX * gameBoardCellsY }, (_) => 0);

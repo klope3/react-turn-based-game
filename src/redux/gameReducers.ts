@@ -1,74 +1,19 @@
-import {
-  gameBoardCellsX,
-  gameBoardCellsY,
-  playerHealthStart,
-} from "../constants";
-import { findPath } from "../gridLogic/astar";
+import { gameBoardCellsX } from "../constants";
 import { getEnemyWalkableGrid } from "../gridLogic/helpers";
 import {
-  TOGGLE_INPUT,
   BasicAction,
   CLICK_CELL,
   ENEMY_TURN,
   MOVE_PLAYER,
+  TOGGLE_INPUT,
 } from "../types/actionTypes";
-import { Cell, CharacterData, GameState } from "../types/gameStateTypes";
-import {
-  areCellsAdjacent,
-  coordsToFlatIndex,
-  flatIndexToCoords,
-  getNewId,
-} from "../utility";
+import { GameState } from "../types/gameStateTypes";
+import { areCellsAdjacent, flatIndexToCoords } from "../utility";
+import { cloneCells, cloneCharacters } from "./cloners";
+import { attackPlayerMutator, singleEnemyMoveMutator } from "./gameMutators";
+import { getInitialState } from "./initialState";
 
-const initialCharacters: CharacterData[] = [
-  {
-    type: "player",
-    health: playerHealthStart,
-    curCellIndex: 26,
-    id: getNewId(),
-  },
-  {
-    type: "enemy",
-    health: 1,
-    curCellIndex: 28,
-    id: getNewId(),
-  },
-  {
-    type: "enemy",
-    health: 1,
-    curCellIndex: 20,
-    id: getNewId(),
-  },
-  {
-    type: "enemy",
-    health: 1,
-    curCellIndex: 9,
-    id: getNewId(),
-  },
-  {
-    type: "enemy",
-    health: 1,
-    curCellIndex: 34,
-    id: getNewId(),
-  },
-];
-const initialCells: Cell[] = Array.from(
-  { length: gameBoardCellsX * gameBoardCellsY },
-  (_) => ({
-    characterHere: undefined,
-  })
-);
-initialCells[26].characterHere = initialCharacters[0];
-initialCells[28].characterHere = initialCharacters[1];
-initialCells[20].characterHere = initialCharacters[2];
-initialCells[9].characterHere = initialCharacters[3];
-initialCells[34].characterHere = initialCharacters[4];
-const initialState: GameState = {
-  activeCharacters: initialCharacters,
-  selectedCellIndex: undefined,
-  userInput: true,
-  cells: initialCells,
-};
+const initialState = getInitialState();
 
 export function gameReducer(
   state = initialState,
@@ -76,50 +21,11 @@ export function gameReducer(
 ): GameState {
   switch (action.type) {
     case CLICK_CELL:
-      const clickedIndex = action.value;
-      console.log(clickedIndex + " in reducer");
-      return {
-        ...state,
-        selectedCellIndex: clickedIndex,
-      };
+      return clickCellReducer(state, action);
     case MOVE_PLAYER:
-      const player = state.activeCharacters.find(
-        (char) => char.type === "player"
-      );
-      if (!player) return state;
-
-      const playerIndex = state.activeCharacters.indexOf(player);
-      const newCharacters = [...state.activeCharacters];
-      const newPlayer = { ...player };
-      newCharacters[playerIndex] = newPlayer;
-      const playerPrevCellIndex = newPlayer.curCellIndex;
-      const playerTargetCellIndex = action.value;
-
-      const newCells = [...state.cells];
-      const characterOccupyingTarget = newCharacters.find(
-        (char) => char.curCellIndex === playerTargetCellIndex
-      );
-      if (characterOccupyingTarget) {
-        newCharacters.splice(
-          newCharacters.indexOf(characterOccupyingTarget),
-          1
-        );
-        console.log("killed:");
-        console.log(characterOccupyingTarget);
-      }
-
-      newPlayer.curCellIndex = playerTargetCellIndex;
-      newCells[playerPrevCellIndex].characterHere = undefined;
-      newCells[playerTargetCellIndex].characterHere = newPlayer;
-
-      return {
-        ...state,
-        activeCharacters: newCharacters,
-        userInput: false,
-        cells: newCells,
-      };
+      return playerTurnReducer(state, action);
     case ENEMY_TURN:
-      return doEnemyTurn(state);
+      return enemyTurnReducer(state);
     case TOGGLE_INPUT:
       return {
         ...state,
@@ -130,73 +36,78 @@ export function gameReducer(
   }
 }
 
-function doEnemyTurn(state: GameState): GameState {
-  const player = state.activeCharacters.find((char) => char.type === "player");
-  if (!player) return state;
+function clickCellReducer(state: GameState, action: BasicAction): GameState {
+  const clickedIndex = action.value;
+  return {
+    ...state,
+    selectedCellIndex: clickedIndex,
+  };
+}
 
-  const newState = { ...state };
-  const newCharacters = [...newState.activeCharacters];
-  const newPlayer = { ...player };
-  const newPlayerIndex = newCharacters.indexOf(player);
-  newCharacters[newPlayerIndex] = newPlayer;
-  const newCells = [...newState.cells];
-  const playerCoords = flatIndexToCoords(player.curCellIndex, gameBoardCellsX);
+function playerTurnReducer(state: GameState, action: BasicAction): GameState {
+  const newCharacters = cloneCharacters(state);
+  const newPlayer = newCharacters.find((char) => char.type === "player");
+  if (!newPlayer) return state;
+
+  const playerPrevCellIndex = newPlayer.curCellIndex;
+  const playerTargetCellIndex = action.value;
+
+  const newCells = cloneCells(state);
+  const characterOccupyingTarget = newCharacters.find(
+    (char) => char.curCellIndex === playerTargetCellIndex
+  );
+  if (characterOccupyingTarget) {
+    newCharacters.splice(newCharacters.indexOf(characterOccupyingTarget), 1);
+  }
+
+  newPlayer.curCellIndex = playerTargetCellIndex;
+  newCells[playerPrevCellIndex].characterHere = undefined;
+  newCells[playerTargetCellIndex].characterHere = newPlayer;
+
+  return {
+    ...state,
+    activeCharacters: newCharacters,
+    userInput: false,
+    cells: newCells,
+  };
+}
+
+function enemyTurnReducer(state: GameState): GameState {
+  const newCharacters = cloneCharacters(state);
+  const newPlayer = newCharacters.find((char) => char.type === "player");
+  if (!newPlayer) return state;
+
+  const newCells = cloneCells(state);
+  const playerCoords = flatIndexToCoords(
+    newPlayer.curCellIndex,
+    gameBoardCellsX
+  );
   const walkableGrid = getEnemyWalkableGrid(state.cells);
 
   for (let i = 0; i < newCharacters.length; i++) {
     if (newCharacters[i].type === "player") continue;
 
     const enemy = newCharacters[i];
-    const enemyStartCellIndex = enemy.curCellIndex;
-    if (
-      areCellsAdjacent(
-        enemyStartCellIndex,
-        player.curCellIndex,
-        gameBoardCellsX
-      )
-    ) {
-      console.log("player attacked by character:");
-      console.log(enemy);
-      newPlayer.health--;
-      const curCoords = flatIndexToCoords(enemyStartCellIndex, gameBoardCellsX);
-      walkableGrid[curCoords.y][curCoords.x] = false;
-      continue;
-    }
-    const start = flatIndexToCoords(enemyStartCellIndex, gameBoardCellsX);
-    const path = findPath(walkableGrid, start, playerCoords);
-    if (!path || path.length < 2) continue;
-
-    const firstStepCoords = path[1]; //the coords of the first path cell beyond the start cell
-    const firstStepCellIndex = coordsToFlatIndex(
-      firstStepCoords,
+    const canAttackPlayer = areCellsAdjacent(
+      enemy.curCellIndex,
+      newPlayer.curCellIndex,
       gameBoardCellsX
     );
-    const targetCoords =
-      firstStepCellIndex === player.curCellIndex ? path[0] : firstStepCoords;
-    walkableGrid[start.y][start.x] = true;
-    walkableGrid[targetCoords.y][targetCoords.x] = false;
-    const targetIndex = coordsToFlatIndex(targetCoords, gameBoardCellsX);
-    const enemyNewCellIndex =
-      targetIndex === player.curCellIndex ? enemyStartCellIndex : targetIndex;
-    const newEnemy: CharacterData = {
-      ...enemy,
-      curCellIndex: enemyNewCellIndex,
-    };
-    newCharacters[i] = newEnemy;
-    newCells[enemyStartCellIndex] = {
-      ...newCells[enemyStartCellIndex],
-      characterHere: undefined,
-    };
-    newCells[enemyNewCellIndex] = {
-      ...newCells[enemyNewCellIndex],
-      characterHere: newEnemy,
-    };
-  }
-  if (newPlayer.health <= 0) {
-    newCharacters.splice(newPlayerIndex, 1);
-  }
-  newState.activeCharacters = newCharacters;
-  newState.cells = newCells;
 
-  return newState;
+    if (canAttackPlayer) {
+      attackPlayerMutator(newPlayer, enemy, walkableGrid);
+    } else {
+      singleEnemyMoveMutator(enemy, playerCoords, walkableGrid, newCells);
+    }
+  }
+
+  if (newPlayer.health <= 0) {
+    newCharacters.splice(newCharacters.indexOf(newPlayer), 1);
+  }
+
+  return {
+    ...state,
+    activeCharacters: newCharacters,
+    cells: newCells,
+  };
 }

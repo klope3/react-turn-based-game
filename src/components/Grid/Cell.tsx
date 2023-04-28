@@ -1,5 +1,3 @@
-import { clickCell } from "../../redux/gameActions";
-
 type CellProps = {
   flatIndex: number;
   isSelected: boolean;
