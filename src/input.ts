@@ -6,13 +6,14 @@ import {
   toggleInput,
 } from "./redux/gameActions";
 import { Action, BasicAction } from "./types/actionTypes";
-import { CharacterData } from "./types/gameStateTypes";
+import { Cell, CharacterData } from "./types/gameStateTypes";
 import { areCellsAdjacent } from "./utility";
 
 export function getClickGridActions(
   e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   player: CharacterData | undefined,
-  selectedCellIndex: number | undefined
+  selectedCellIndex: number | undefined,
+  cells: Cell[]
 ): Action[] | BasicAction[] {
   const target = e.target as HTMLElement;
   if (target.dataset === undefined || target.dataset.cellindex === undefined)
@@ -28,8 +29,10 @@ export function getClickGridActions(
     gameBoardCellsX,
     true
   );
+  const objHere = cells[clickedIndex].cellObject;
+  const blocked = objHere && objHere.type === "rock";
 
-  if (clickedAgain && adjacentToPlayer) {
+  if (clickedAgain && adjacentToPlayer && !blocked) {
     return [movePlayer(clickedIndex), enemyTurn(), toggleInput()];
   } else {
     return [clickCell(clickedIndex)];

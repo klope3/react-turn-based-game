@@ -12,5 +12,6 @@ export function cloneCharacters(state: GameState): CharacterData[] {
 export function cloneCells(state: GameState): Cell[] {
   return state.cells.map((cell) => ({
     characterHere: cell.characterHere,
+    cellObject: cell.cellObject,
   }));
 }

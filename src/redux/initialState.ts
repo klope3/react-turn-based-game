@@ -3,6 +3,7 @@ import {
   gameBoardCellsY,
   playerHealthStart,
 } from "../constants";
+import { generateCells } from "../generate/environment";
 import { Cell, CharacterData, GameState } from "../types/gameStateTypes";
 import { getNewId } from "../utility";
 
@@ -29,7 +30,7 @@ export function getInitialState(): GameState {
     {
       type: "enemy",
       health: 1,
-      curCellIndex: 9,
+      curCellIndex: 10,
       id: getNewId(),
     },
     {
@@ -39,16 +40,11 @@ export function getInitialState(): GameState {
       id: getNewId(),
     },
   ];
-  const initialCells: Cell[] = Array.from(
-    { length: gameBoardCellsX * gameBoardCellsY },
-    (_) => ({
-      characterHere: undefined,
-    })
-  );
+  const initialCells = generateCells();
   initialCells[26].characterHere = initialCharacters[0];
   initialCells[28].characterHere = initialCharacters[1];
   initialCells[20].characterHere = initialCharacters[2];
-  initialCells[9].characterHere = initialCharacters[3];
+  initialCells[10].characterHere = initialCharacters[3];
   initialCells[34].characterHere = initialCharacters[4];
   const initialState: GameState = {
     activeCharacters: initialCharacters,
