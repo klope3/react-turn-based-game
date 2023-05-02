@@ -1,22 +1,22 @@
 import { gameBoardCellsX, godMode } from "../constants";
-import { findPath } from "../gridLogic/astar";
-import { Cell, CharacterData, Coordinates } from "../types/gameStateTypes";
+import { getPathForEnemy } from "../gridLogic/movement";
+import { Cell, CharacterData } from "../types/gameStateTypes";
 import { coordsToFlatIndex, flatIndexToCoords } from "../utility";
 
 //! Mutators are only for use on state objects that have ALREADY been cloned!!
 
 export function singleEnemyMoveMutator(
   newEnemy: CharacterData,
-  playerCoords: Coordinates,
+  newPlayer: CharacterData,
   walkableGrid: boolean[][],
   newCells: Cell[]
 ) {
-  const start = flatIndexToCoords(newEnemy.curCellIndex, gameBoardCellsX);
-  const path = findPath(walkableGrid, start, playerCoords);
+  const path = getPathForEnemy(newEnemy, newPlayer, walkableGrid);
   if (!path || path.length < 2) return;
 
   const targetCoords = path[1];
 
+  const start = flatIndexToCoords(newEnemy.curCellIndex, gameBoardCellsX);
   walkableGrid[start.y][start.x] = true;
   walkableGrid[targetCoords.y][targetCoords.x] = false;
 

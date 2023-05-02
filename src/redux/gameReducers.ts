@@ -1,5 +1,5 @@
-import { gameBoardCellsX } from "../constants";
 import { getEnemyWalkableGrid } from "../gridLogic/helpers";
+import { canEnemyAttackPlayer } from "../gridLogic/interaction";
 import {
   BasicAction,
   CLICK_CELL,
@@ -8,7 +8,6 @@ import {
   TOGGLE_INPUT,
 } from "../types/actionTypes";
 import { GameState } from "../types/gameStateTypes";
-import { areCellsAdjacent, flatIndexToCoords } from "../utility";
 import { cloneCells, cloneCharacters } from "./cloners";
 import { attackPlayerMutator, singleEnemyMoveMutator } from "./gameMutators";
 import { getInitialState } from "./initialState";
@@ -78,26 +77,17 @@ function enemyTurnReducer(state: GameState): GameState {
   if (!newPlayer) return state;
 
   const newCells = cloneCells(state);
-  const playerCoords = flatIndexToCoords(
-    newPlayer.curCellIndex,
-    gameBoardCellsX
-  );
   const walkableGrid = getEnemyWalkableGrid(state.cells);
 
   for (let i = 0; i < newCharacters.length; i++) {
     if (newCharacters[i].type === "player") continue;
 
     const enemy = newCharacters[i];
-    const canAttackPlayer = areCellsAdjacent(
-      enemy.curCellIndex,
-      newPlayer.curCellIndex,
-      gameBoardCellsX
-    );
 
-    if (canAttackPlayer) {
+    if (canEnemyAttackPlayer(enemy, newPlayer)) {
       attackPlayerMutator(newPlayer, enemy, walkableGrid);
     } else {
-      singleEnemyMoveMutator(enemy, playerCoords, walkableGrid, newCells);
+      singleEnemyMoveMutator(enemy, newPlayer, walkableGrid, newCells);
     }
   }
 
