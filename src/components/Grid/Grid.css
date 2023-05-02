@@ -1,0 +1,23 @@
+.grid {
+  display: grid;
+  max-width: 320px;
+}
+
+.cell {
+  background-color: gray;
+  position: relative;
+}
+
+.cell.selected::before {
+  border: 3px solid lightgreen;
+}
+
+.cell::before {
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 5%;
+  bottom: 5%;
+  background-color: black;
+}
