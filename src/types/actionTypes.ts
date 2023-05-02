@@ -1,4 +1,4 @@
-type Action = {
+export type Action = {
   type: string;
 };
 

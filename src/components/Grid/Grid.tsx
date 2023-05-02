@@ -4,14 +4,9 @@ import {
   gameBoardCellsX,
   gameBoardCellsY,
 } from "../../constants";
-import {
-  clickCell,
-  enemyTurn,
-  movePlayer,
-  toggleInput,
-} from "../../redux/gameActions";
+import { getClickGridActions } from "../../input";
 import { GameState } from "../../types/gameStateTypes";
-import { areCellsAdjacent, usePlayer } from "../../utility";
+import { usePlayer } from "../../utility";
 import { Cell } from "./Cell";
 import "./Grid.css";
 
@@ -31,31 +26,15 @@ export function Grid() {
   function clickGrid(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (!userInput) return;
 
-    const target = e.target as HTMLElement;
-    if (target.dataset === undefined || target.dataset.cellindex === undefined)
-      return;
-
-    const clickedIndex = +target.dataset.cellindex;
-    if (!player) return;
-
-    const clickedAgain = clickedIndex === selectedCellIndex;
-    const adjacentToPlayer = areCellsAdjacent(
-      player.curCellIndex,
-      clickedIndex,
-      gameBoardCellsX,
-      true
-    );
-
-    if (clickedAgain && adjacentToPlayer) {
-      dispatch(movePlayer(clickedIndex));
-      setTimeout(() => {
-        dispatch(enemyTurn());
-      }, actionTimeDefault * 1000);
-      setTimeout(() => {
-        dispatch(toggleInput());
-      }, actionTimeDefault * 1000 * 2);
-    } else {
-      dispatch(clickCell(clickedIndex));
+    const actions = getClickGridActions(e, player, selectedCellIndex);
+    for (let i = 0; i < actions.length; i++) {
+      const delay = actionTimeDefault * i * 1000;
+      if (delay === 0) dispatch(actions[i]);
+      else {
+        setTimeout(() => {
+          dispatch(actions[i]);
+        }, delay);
+      }
     }
   }
 
