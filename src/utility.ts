@@ -48,7 +48,7 @@ export function getTaxicabDistance(
 
 export function usePlayer() {
   return useSelector((state: GameState) =>
-    state.activeCharacters.find((char) => char.enemyType === undefined)
+    state.activeCharacters.find((char) => char.enemyData.type === "none")
   );
 }
 

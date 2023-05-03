@@ -1,5 +1,4 @@
 import { getEnemyWalkableGrid } from "../gridLogic/helpers";
-import { canEnemyAttackPlayer } from "../gridLogic/interaction";
 import {
   BasicAction,
   CLICK_CELL,
@@ -45,7 +44,9 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
 
 function playerTurnReducer(state: GameState, action: BasicAction): GameState {
   const newCharacters = cloneCharacters(state);
-  const newPlayer = newCharacters.find((char) => char.enemyType === undefined);
+  const newPlayer = newCharacters.find(
+    (char) => char.enemyData.type === "none"
+  );
   if (!newPlayer) return state;
 
   const playerPrevCellIndex = newPlayer.curCellIndex;
@@ -73,18 +74,20 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
 
 function enemyTurnReducer(state: GameState): GameState {
   const newCharacters = cloneCharacters(state);
-  const newPlayer = newCharacters.find((char) => char.enemyType === undefined);
+  const newPlayer = newCharacters.find(
+    (char) => char.enemyData.type === "none"
+  );
   if (!newPlayer) return state;
 
   const newCells = cloneCells(state);
   const walkableGrid = getEnemyWalkableGrid(state.cells);
 
   for (let i = 0; i < newCharacters.length; i++) {
-    if (newCharacters[i].enemyType === undefined) continue;
+    if (newCharacters[i].enemyData.type === "none") continue;
 
     const enemy = newCharacters[i];
 
-    if (canEnemyAttackPlayer(enemy, newPlayer)) {
+    if (enemy.enemyData.canAttackPlayer(enemy, newPlayer, newCells)) {
       attackPlayerMutator(newPlayer, enemy, walkableGrid);
     } else {
       singleEnemyMoveMutator(enemy, newPlayer, walkableGrid, newCells);

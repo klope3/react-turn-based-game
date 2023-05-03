@@ -15,3 +15,7 @@
 .character.melee {
   background-color: red;
 }
+
+.character.archer {
+  background-color: yellow;
+}

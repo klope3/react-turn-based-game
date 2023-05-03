@@ -10,7 +10,7 @@ function App() {
     maxWidth: `${displayWidth}px`,
   };
   const characters = useSelector((state: GameState) => state.activeCharacters);
-  const player = characters.find((char) => char.enemyType === undefined);
+  const player = characters.find((char) => char.enemyData.type === "none");
 
   return (
     <>

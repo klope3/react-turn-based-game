@@ -4,12 +4,14 @@ import {
   minSpawnDistanceFromPlayer,
   playerHealthStart,
 } from "../constants";
-import { Cell, CharacterData } from "../types/gameStateTypes";
+import { getEnemyData } from "../data/characters";
+import { Cell, CharacterState } from "../types/gameStateTypes";
 import { getNewId, getRandomInt, getTaxicabDistance } from "../utility";
 import { mulberry32 } from "./random";
 
 export function generateCharacters(cells: Cell[], seed: number) {
-  const player: CharacterData = {
+  const player: CharacterState = {
+    enemyData: getEnemyData("none"),
     curCellIndex: Math.floor(mulberry32(seed) * cells.length),
     health: playerHealthStart,
     id: getNewId(),
@@ -35,10 +37,10 @@ export function generateCharacters(cells: Cell[], seed: number) {
     const randIndex = Math.floor(
       mulberry32(i + getRandomInt(seed)) * validIndices.length
     );
-    const newCharacter: CharacterData = {
+    const newCharacter: CharacterState = {
       curCellIndex: validIndices[randIndex],
       health: 1,
-      enemyType: "melee",
+      enemyData: getEnemyData("archer"),
       id: getNewId(),
     };
     characters.push(newCharacter);

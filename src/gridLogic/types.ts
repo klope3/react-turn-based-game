@@ -15,3 +15,13 @@ export type PathfindingCell = {
   gCost: number;
   hCost: number;
 };
+
+export type Direction =
+  | "west"
+  | "northwest"
+  | "north"
+  | "northeast"
+  | "east"
+  | "southeast"
+  | "south"
+  | "southwest";

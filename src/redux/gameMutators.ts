@@ -1,17 +1,17 @@
 import { gameBoardCellsX, godMode } from "../constants";
 import { getPathForEnemy } from "../gridLogic/movement";
-import { Cell, CharacterData } from "../types/gameStateTypes";
+import { Cell, CharacterState } from "../types/gameStateTypes";
 import { coordsToFlatIndex, flatIndexToCoords } from "../utility";
 
 //! Mutators are only for use on state objects that have ALREADY been cloned!!
 
 export function singleEnemyMoveMutator(
-  newEnemy: CharacterData,
-  newPlayer: CharacterData,
+  newEnemy: CharacterState,
+  newPlayer: CharacterState,
   walkableGrid: boolean[][],
   newCells: Cell[]
 ) {
-  const path = getPathForEnemy(newEnemy, newPlayer, walkableGrid);
+  const path = getPathForEnemy(newEnemy, newPlayer, walkableGrid, newCells);
   if (!path || path.length < 2) return;
 
   const targetCoords = path[1];
@@ -28,8 +28,8 @@ export function singleEnemyMoveMutator(
 }
 
 export function attackPlayerMutator(
-  newPlayer: CharacterData,
-  newEnemy: CharacterData,
+  newPlayer: CharacterState,
+  newEnemy: CharacterState,
   walkableGrid: boolean[][]
 ) {
   if (!godMode) newPlayer.health--;

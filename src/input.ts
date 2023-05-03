@@ -6,12 +6,12 @@ import {
   toggleInput,
 } from "./redux/gameActions";
 import { Action, BasicAction } from "./types/actionTypes";
-import { Cell, CharacterData } from "./types/gameStateTypes";
+import { Cell, CharacterState } from "./types/gameStateTypes";
 import { areCellsAdjacent } from "./utility";
 
 export function getClickGridActions(
   e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  player: CharacterData | undefined,
+  player: CharacterState | undefined,
   selectedCellIndex: number | undefined,
   cells: Cell[]
 ): Action[] | BasicAction[] {

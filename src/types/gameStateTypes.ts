@@ -1,15 +1,36 @@
 export type GameState = {
   selectedCellIndex: number | undefined;
-  activeCharacters: CharacterData[];
+  activeCharacters: CharacterState[];
   userInput: boolean;
   cells: Cell[];
 };
 
-export type CharacterData = {
-  enemyType?: EnemyType;
+export type CharacterState = {
+  enemyData: EnemyData;
   curCellIndex: number;
   health: number;
   id: number;
+};
+
+export type EnemyData = {
+  type: EnemyType;
+  attackRange: number;
+  getAttackableIndices: (selfState: CharacterState, cells: Cell[]) => number[];
+  chooseMovementIndex: (
+    selfState: CharacterState,
+    playerState: CharacterState,
+    cells: Cell[]
+  ) => number;
+  chooseAttackIndex: (
+    selfState: CharacterState,
+    playerState: CharacterState,
+    cells: Cell[]
+  ) => number;
+  canAttackPlayer: (
+    selfState: CharacterState,
+    playerState: CharacterState,
+    cells: Cell[]
+  ) => boolean;
 };
 
 export type Coordinates = {
@@ -18,7 +39,7 @@ export type Coordinates = {
 };
 
 export type Cell = {
-  characterHere: CharacterData | undefined;
+  characterHere: CharacterState | undefined;
   cellObject: CellObject | undefined;
 };
 
@@ -28,4 +49,4 @@ export type CellObject = {
 
 type CellObjectType = "rock";
 
-type EnemyType = "melee" | "archer" | "bomber";
+export type EnemyType = "none" | "melee" | "archer" | "bomber";

@@ -1,15 +1,17 @@
 import { gameBoardCellsX } from "../constants";
-import { CharacterData } from "../types/gameStateTypes";
+import { Cell, CharacterState } from "../types/gameStateTypes";
 import { flatIndexToCoords } from "../utility";
 import { findPath } from "./astar";
 
 export function getPathForEnemy(
-  enemy: CharacterData,
-  player: CharacterData,
-  walkableGrid: boolean[][]
+  enemy: CharacterState,
+  player: CharacterState,
+  walkableGrid: boolean[][],
+  cells: Cell[]
 ) {
   const start = flatIndexToCoords(enemy.curCellIndex, gameBoardCellsX);
-  const playerCoords = flatIndexToCoords(player.curCellIndex, gameBoardCellsX);
+  const destIndex = enemy.enemyData.chooseMovementIndex(enemy, player, cells);
+  const dest = flatIndexToCoords(destIndex, gameBoardCellsX);
 
-  return findPath(walkableGrid, start, playerCoords);
+  return findPath(walkableGrid, start, dest);
 }
