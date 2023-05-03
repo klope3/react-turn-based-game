@@ -11,7 +11,6 @@ import { mulberry32 } from "./random";
 export function generateCharacters(cells: Cell[], seed: number) {
   const player: CharacterData = {
     curCellIndex: Math.floor(mulberry32(seed) * cells.length),
-    type: "player",
     health: playerHealthStart,
     id: getNewId(),
   };
@@ -39,7 +38,7 @@ export function generateCharacters(cells: Cell[], seed: number) {
     const newCharacter: CharacterData = {
       curCellIndex: validIndices[randIndex],
       health: 1,
-      type: "enemy",
+      enemyType: "melee",
       id: getNewId(),
     };
     characters.push(newCharacter);

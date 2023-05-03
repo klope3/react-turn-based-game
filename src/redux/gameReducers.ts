@@ -45,7 +45,7 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
 
 function playerTurnReducer(state: GameState, action: BasicAction): GameState {
   const newCharacters = cloneCharacters(state);
-  const newPlayer = newCharacters.find((char) => char.type === "player");
+  const newPlayer = newCharacters.find((char) => char.enemyType === undefined);
   if (!newPlayer) return state;
 
   const playerPrevCellIndex = newPlayer.curCellIndex;
@@ -73,14 +73,14 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
 
 function enemyTurnReducer(state: GameState): GameState {
   const newCharacters = cloneCharacters(state);
-  const newPlayer = newCharacters.find((char) => char.type === "player");
+  const newPlayer = newCharacters.find((char) => char.enemyType === undefined);
   if (!newPlayer) return state;
 
   const newCells = cloneCells(state);
   const walkableGrid = getEnemyWalkableGrid(state.cells);
 
   for (let i = 0; i < newCharacters.length; i++) {
-    if (newCharacters[i].type === "player") continue;
+    if (newCharacters[i].enemyType === undefined) continue;
 
     const enemy = newCharacters[i];
 

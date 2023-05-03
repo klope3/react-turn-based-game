@@ -6,7 +6,7 @@ export type GameState = {
 };
 
 export type CharacterData = {
-  type: CharacterType;
+  enemyType?: EnemyType;
   curCellIndex: number;
   health: number;
   id: number;
@@ -28,4 +28,4 @@ export type CellObject = {
 
 type CellObjectType = "rock";
 
-export type CharacterType = "player" | "enemy";
+type EnemyType = "melee" | "archer" | "bomber";

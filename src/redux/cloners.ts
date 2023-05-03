@@ -2,7 +2,7 @@ import { Cell, CharacterData, GameState } from "../types/gameStateTypes";
 
 export function cloneCharacters(state: GameState): CharacterData[] {
   return state.activeCharacters.map((char) => ({
-    type: char.type,
+    enemyType: char.enemyType,
     curCellIndex: char.curCellIndex,
     health: char.health,
     id: char.id,
