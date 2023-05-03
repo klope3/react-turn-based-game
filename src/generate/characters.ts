@@ -5,12 +5,12 @@ import {
   playerHealthStart,
 } from "../constants";
 import { Cell, CharacterData } from "../types/gameStateTypes";
-import { getNewId, getTaxicabDistance } from "../utility";
+import { getNewId, getRandomInt, getTaxicabDistance } from "../utility";
 import { mulberry32 } from "./random";
 
-export function generateCharacters(cells: Cell[]) {
+export function generateCharacters(cells: Cell[], seed: number) {
   const player: CharacterData = {
-    curCellIndex: Math.floor(mulberry32(0) * cells.length),
+    curCellIndex: Math.floor(mulberry32(seed) * cells.length),
     type: "player",
     health: playerHealthStart,
     id: getNewId(),
@@ -33,7 +33,9 @@ export function generateCharacters(cells: Cell[]) {
 
   const characters = [player];
   for (let i = 0; i < minEnemyCount && validIndices.length > 0; i++) {
-    const randIndex = Math.floor(mulberry32(0) * validIndices.length);
+    const randIndex = Math.floor(
+      mulberry32(i + getRandomInt(seed)) * validIndices.length
+    );
     const newCharacter: CharacterData = {
       curCellIndex: validIndices[randIndex],
       health: 1,

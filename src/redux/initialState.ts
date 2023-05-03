@@ -3,8 +3,10 @@ import { generateCells } from "../generate/environment";
 import { GameState } from "../types/gameStateTypes";
 
 export function getInitialState(): GameState {
-  const initialCells = generateCells();
-  const initialCharacters = generateCharacters(initialCells);
+  // TODO: player should be able to choose between random seed at start OR custom seed
+  const seed = 0;
+  const initialCells = generateCells(seed);
+  const initialCharacters = generateCharacters(initialCells, seed);
   const initialState: GameState = {
     activeCharacters: initialCharacters,
     selectedCellIndex: undefined,
