@@ -11,12 +11,12 @@ import { Cell } from "./Cell";
 import "./Grid.css";
 
 export function Grid() {
-  const g = Array.from({ length: gameBoardCellsX * gameBoardCellsY }, (_) => 0);
   const style = {
     gridTemplateColumns: `repeat(${gameBoardCellsX}, auto)`,
     aspectRatio: `${gameBoardCellsX / gameBoardCellsY}`,
   };
   const dispatch = useDispatch();
+  const cells = useSelector((state: GameState) => state.cells);
   const selectedCellIndex = useSelector(
     (state: GameState) => state.selectedCellIndex
   );
@@ -26,7 +26,7 @@ export function Grid() {
   function clickGrid(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (!userInput) return;
 
-    const actions = getClickGridActions(e, player, selectedCellIndex);
+    const actions = getClickGridActions(e, player, selectedCellIndex, cells);
     for (let i = 0; i < actions.length; i++) {
       const delay = actionTimeDefault * i * 1000;
       if (delay === 0) dispatch(actions[i]);
@@ -40,8 +40,12 @@ export function Grid() {
 
   return (
     <div className="grid" style={style} onClick={clickGrid}>
-      {g.map((_, i) => (
-        <Cell flatIndex={i} isSelected={i === selectedCellIndex} />
+      {cells.map((cell, i) => (
+        <Cell
+          flatIndex={i}
+          isSelected={i === selectedCellIndex}
+          cellData={cell}
+        />
       ))}
     </div>
   );

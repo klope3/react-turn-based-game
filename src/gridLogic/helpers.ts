@@ -10,7 +10,9 @@ export function getEnemyWalkableGrid(cells: Cell[]): boolean[][] {
   for (let i = 0; i < cells.length; i++) {
     const coords = flatIndexToCoords(i, gameBoardCellsX);
     const characterHere = cells[i].characterHere;
-    walkable[coords.y][coords.x] = characterHere === undefined;
+    const objHere = cells[i].cellObject;
+    walkable[coords.y][coords.x] =
+      characterHere === undefined && (!objHere || objHere.type !== "rock");
   }
   return walkable;
 }

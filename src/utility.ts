@@ -1,6 +1,7 @@
 import { displayWidth, gameBoardCellsX } from "./constants";
 import { useSelector } from "react-redux/es/exports";
 import { Coordinates, GameState } from "./types/gameStateTypes";
+import { mulberry32 } from "./generate/random";
 
 let idCounter = 0;
 export function getNewId() {
@@ -63,4 +64,8 @@ export function areCellsAdjacent(
     gridWidth
   );
   return distance === 1 || (allowDiagonal && deltaX === 1 && deltaY === 1);
+}
+
+export function getRandomInt(seed: number) {
+  return Math.floor(Number.MAX_SAFE_INTEGER * mulberry32(seed));
 }

@@ -4,3 +4,5 @@ export const playerHealthStart = 3;
 export const displayWidth = 320;
 export const actionTimeDefault = 0.2;
 export const godMode = false;
+export const minSpawnDistanceFromPlayer = 4;
+export const minEnemyCount = 3;

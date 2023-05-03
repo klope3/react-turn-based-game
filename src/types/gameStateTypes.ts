@@ -19,6 +19,13 @@ export type Coordinates = {
 
 export type Cell = {
   characterHere: CharacterData | undefined;
+  cellObject: CellObject | undefined;
 };
+
+export type CellObject = {
+  type: CellObjectType;
+};
+
+type CellObjectType = "rock";
 
 export type CharacterType = "player" | "enemy";
