@@ -31,3 +31,14 @@
   bottom: 25%;
   background-color: brown;
 }
+
+.bomb::before {
+  content: "";
+  position: absolute;
+  left: 40%;
+  right: 40%;
+  top: 40%;
+  bottom: 40%;
+  background-color: orange;
+  rotate: 45deg;
+}

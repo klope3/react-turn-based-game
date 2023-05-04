@@ -1,15 +1,16 @@
+import { gameBoardCellsX, gameBoardCellsY } from "../constants";
 import { getEnemyWalkableGrid } from "../gridLogic/helpers";
-import { canEnemyAttackPlayer } from "../gridLogic/interaction";
 import {
   BasicAction,
   CLICK_CELL,
   ENEMY_TURN,
   MOVE_PLAYER,
   TOGGLE_INPUT,
+  UPDATE_CELL_OBJECTS,
 } from "../types/actionTypes";
 import { GameState } from "../types/gameStateTypes";
 import { cloneCells, cloneCharacters } from "./cloners";
-import { attackPlayerMutator, singleEnemyMoveMutator } from "./gameMutators";
+import { explosionMutator, singleEnemyMoveMutator } from "./gameMutators";
 import { getInitialState } from "./initialState";
 
 const initialState = getInitialState();
@@ -30,6 +31,8 @@ export function gameReducer(
         ...state,
         userInput: !state.userInput,
       };
+    case UPDATE_CELL_OBJECTS:
+      return updateCellObjectsReducer(state);
     default:
       return state;
   }
@@ -45,7 +48,9 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
 
 function playerTurnReducer(state: GameState, action: BasicAction): GameState {
   const newCharacters = cloneCharacters(state);
-  const newPlayer = newCharacters.find((char) => char.type === "player");
+  const newPlayer = newCharacters.find(
+    (char) => char.enemyData.type === "none"
+  );
   if (!newPlayer) return state;
 
   const playerPrevCellIndex = newPlayer.curCellIndex;
@@ -73,19 +78,30 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
 
 function enemyTurnReducer(state: GameState): GameState {
   const newCharacters = cloneCharacters(state);
-  const newPlayer = newCharacters.find((char) => char.type === "player");
+  const newPlayer = newCharacters.find(
+    (char) => char.enemyData.type === "none"
+  );
   if (!newPlayer) return state;
 
   const newCells = cloneCells(state);
   const walkableGrid = getEnemyWalkableGrid(state.cells);
 
   for (let i = 0; i < newCharacters.length; i++) {
-    if (newCharacters[i].type === "player") continue;
+    if (newCharacters[i].enemyData.type === "none") continue;
 
     const enemy = newCharacters[i];
+    const { timerDirection } = enemy.enemyData;
+    if (timerDirection === "decrement") {
+      enemy.timer--;
+      if (enemy.timer < 0) enemy.timer = 0;
+    }
+    if (timerDirection === "increment") {
+      enemy.timer++;
+    }
 
-    if (canEnemyAttackPlayer(enemy, newPlayer)) {
-      attackPlayerMutator(newPlayer, enemy, walkableGrid);
+    if (
+      enemy.enemyData.tryAttackPlayer(enemy, newPlayer, newCells, walkableGrid)
+    ) {
     } else {
       singleEnemyMoveMutator(enemy, newPlayer, walkableGrid, newCells);
     }
@@ -93,6 +109,29 @@ function enemyTurnReducer(state: GameState): GameState {
 
   if (newPlayer.health <= 0) {
     newCharacters.splice(newCharacters.indexOf(newPlayer), 1);
+  }
+
+  return {
+    ...state,
+    activeCharacters: newCharacters,
+    cells: newCells,
+  };
+}
+
+function updateCellObjectsReducer(state: GameState): GameState {
+  const newCells = cloneCells(state);
+  const newCharacters = cloneCharacters(state);
+
+  const allIndices = Array.from(
+    { length: gameBoardCellsX * gameBoardCellsY },
+    (_, i) => i
+  );
+  const explosionIndices = allIndices.filter((index) => {
+    const objHere = newCells[index].cellObject;
+    return objHere !== undefined && objHere.type === "bomb";
+  });
+  for (const index of explosionIndices) {
+    explosionMutator(index, newCharacters, newCells);
   }
 
   return {

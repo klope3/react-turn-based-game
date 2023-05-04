@@ -10,3 +10,4 @@ export const CLICK_CELL = "clickCell";
 export const MOVE_PLAYER = "movePlayer";
 export const ENEMY_TURN = "enemyTurn";
 export const TOGGLE_INPUT = "toggleInput";
+export const UPDATE_CELL_OBJECTS = "updateCellObjects";

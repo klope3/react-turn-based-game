@@ -12,6 +12,14 @@
   background-color: lightgreen;
 }
 
-.character.enemy {
+.character.melee {
   background-color: red;
+}
+
+.character.archer {
+  background-color: yellow;
+}
+
+.character.bomber {
+  background-color: purple;
 }

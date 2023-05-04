@@ -1,19 +1,25 @@
 import { actionTimeDefault } from "../../constants";
-import { CharacterData } from "../../types/gameStateTypes";
+import { CharacterState } from "../../types/gameStateTypes";
 import { cellIndexToPxOffset } from "../../utility";
 import "./Character.css";
 
 type CharacterProps = {
-  data: CharacterData;
+  data: CharacterState;
 };
 
-export function Character({ data: { curCellIndex, type } }: CharacterProps) {
+export function Character({
+  data: {
+    curCellIndex,
+    enemyData: { type },
+  },
+}: CharacterProps) {
   const pxOffset = cellIndexToPxOffset(curCellIndex);
   const style = {
     left: `${pxOffset.left}px`,
     top: `${pxOffset.top}px`,
     transition: `${actionTimeDefault}s`,
   };
+  const characterType = type === "none" ? "player" : type;
 
-  return <div className={`character ${type}`} style={style}></div>;
+  return <div className={`character ${characterType}`} style={style}></div>;
 }

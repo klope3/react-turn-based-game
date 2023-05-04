@@ -3,6 +3,7 @@ import {
   CLICK_CELL,
   ENEMY_TURN,
   MOVE_PLAYER,
+  UPDATE_CELL_OBJECTS,
 } from "../types/actionTypes";
 
 export function clickCell(clickedIndex: number) {
@@ -28,5 +29,11 @@ export function enemyTurn() {
 export function toggleInput() {
   return {
     type: TOGGLE_INPUT,
+  };
+}
+
+export function updateCellObjects() {
+  return {
+    type: UPDATE_CELL_OBJECTS,
   };
 }

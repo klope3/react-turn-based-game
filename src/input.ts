@@ -1,17 +1,19 @@
 import { gameBoardCellsX } from "./constants";
+import { doesObjectRequireUpdate } from "./gridLogic/cellObjects";
 import {
   clickCell,
   enemyTurn,
   movePlayer,
   toggleInput,
+  updateCellObjects,
 } from "./redux/gameActions";
 import { Action, BasicAction } from "./types/actionTypes";
-import { Cell, CharacterData } from "./types/gameStateTypes";
+import { Cell, CharacterState } from "./types/gameStateTypes";
 import { areCellsAdjacent } from "./utility";
 
 export function getClickGridActions(
   e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  player: CharacterData | undefined,
+  player: CharacterState | undefined,
   selectedCellIndex: number | undefined,
   cells: Cell[]
 ): Action[] | BasicAction[] {
@@ -31,10 +33,16 @@ export function getClickGridActions(
   );
   const objHere = cells[clickedIndex].cellObject;
   const blocked = objHere && objHere.type === "rock";
-
-  if (clickedAgain && adjacentToPlayer && !blocked) {
-    return [movePlayer(clickedIndex), enemyTurn(), toggleInput()];
-  } else {
+  if (!clickedAgain || !adjacentToPlayer || blocked) {
     return [clickCell(clickedIndex)];
   }
+
+  const actions = [movePlayer(clickedIndex), enemyTurn(), toggleInput()];
+  const shouldUpdateCellObjects = cells.some(
+    (cell) => cell.cellObject && doesObjectRequireUpdate(cell.cellObject)
+  );
+
+  if (shouldUpdateCellObjects) actions.splice(1, 0, updateCellObjects());
+
+  return actions;
 }
