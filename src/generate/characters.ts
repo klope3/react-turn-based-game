@@ -4,7 +4,7 @@ import {
   minSpawnDistanceFromPlayer,
   playerHealthStart,
 } from "../constants";
-import { getEnemyData } from "../data/characters";
+import { characterData, getEnemyData } from "../data/characters";
 import { Cell, CharacterState } from "../types/gameStateTypes";
 import { getNewId, getRandomInt, getTaxicabDistance } from "../utility";
 import { mulberry32 } from "./random";
@@ -38,10 +38,11 @@ export function generateCharacters(cells: Cell[], seed: number) {
     const randIndex = Math.floor(
       mulberry32(i + getRandomInt(seed)) * validIndices.length
     );
+    const randType = chooseRandomCharacterType(seed, i + getRandomInt(seed));
     const newCharacter: CharacterState = {
       curCellIndex: validIndices[randIndex],
       health: 1,
-      enemyData: getEnemyData("bomber"),
+      enemyData: getEnemyData(randType),
       id: getNewId(),
       timer: 0,
     };
@@ -51,4 +52,14 @@ export function generateCharacters(cells: Cell[], seed: number) {
   }
 
   return characters;
+}
+
+function chooseRandomCharacterType(seed: number, randShift: number) {
+  const typesToChooseFrom = characterData
+    .filter((data) => data.type !== "none")
+    .map((data) => data.type);
+  const randIndex = Math.floor(
+    mulberry32(seed + randShift) * typesToChooseFrom.length
+  );
+  return typesToChooseFrom[randIndex];
 }

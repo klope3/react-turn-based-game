@@ -1,12 +1,15 @@
 import { bombThrowDelay, gameBoardCellsX } from "../constants";
-import { getLinesOfSightFlat, getOpenNeighbors } from "../gridLogic/helpers";
+import {
+  getClosestOpenNeighbor,
+  getLinesOfSightFlat,
+} from "../gridLogic/helpers";
 import { minBy } from "../minMax";
 import { standardAttackPlayerMutator } from "../redux/gameMutators";
 import { Cell, EnemyData, EnemyType } from "../types/gameStateTypes";
 import {
+  areCellsAdjacent,
   flatIndexToCoords,
   getTaxicabDistance,
-  getTrueDistance,
 } from "../utility";
 
 export const characterData: EnemyData[] = [
@@ -16,6 +19,35 @@ export const characterData: EnemyData[] = [
     timerDirection: "none",
     chooseMovementIndex: () => 0,
     tryAttackPlayer: () => false,
+  },
+  {
+    type: "melee",
+    attackRange: 1,
+    timerDirection: "none",
+    chooseMovementIndex(selfState, playerState, cells) {
+      const closestOpenPlayerNeighbor = getClosestOpenNeighbor(
+        selfState.curCellIndex,
+        playerState.curCellIndex,
+        cells
+      );
+      return closestOpenPlayerNeighbor;
+    },
+    tryAttackPlayer(mutableSelfState, mutablePlayerState, _, walkableGrid) {
+      if (
+        !areCellsAdjacent(
+          mutableSelfState.curCellIndex,
+          mutablePlayerState.curCellIndex,
+          gameBoardCellsX
+        )
+      )
+        return false;
+      standardAttackPlayerMutator(
+        mutablePlayerState,
+        mutableSelfState,
+        walkableGrid
+      );
+      return true;
+    },
   },
   {
     type: "archer",
@@ -81,18 +113,18 @@ export const characterData: EnemyData[] = [
       if (mutableSelfState.timer > 0) {
         return false;
       }
-      const validTargetIndices = getOpenNeighbors(
+      const closestOpenPlayerNeighbor = getClosestOpenNeighbor(
+        mutableSelfState.curCellIndex,
         mutablePlayerState.curCellIndex,
-        mutableCells
+        mutableCells,
+        true
       );
-      if (validTargetIndices.length === 0) return false;
+      if (closestOpenPlayerNeighbor === mutableSelfState.curCellIndex)
+        return false;
 
-      const closest = minBy(validTargetIndices, (index) =>
-        getTrueDistance(mutableSelfState.curCellIndex, index, gameBoardCellsX)
-      ) as number; //if we reach this, validTargetIndices has at least one value, so this WILL be defined
       const { distance, deltaX, deltaY } = getTaxicabDistance(
         mutableSelfState.curCellIndex,
-        closest,
+        closestOpenPlayerNeighbor,
         gameBoardCellsX
       );
       const closeEnough =
@@ -101,7 +133,7 @@ export const characterData: EnemyData[] = [
         deltaY <= this.attackRange;
       if (!closeEnough) return false;
 
-      mutableCells[closest].cellObject = {
+      mutableCells[closestOpenPlayerNeighbor].cellObject = {
         type: "bomb",
       };
       const coords = flatIndexToCoords(
@@ -113,17 +145,12 @@ export const characterData: EnemyData[] = [
       return true;
     },
     chooseMovementIndex(selfState, playerState, cells) {
-      const openPlayerNeighbors = getOpenNeighbors(
+      const closestOpenPlayerNeighbor = getClosestOpenNeighbor(
+        selfState.curCellIndex,
         playerState.curCellIndex,
         cells
       );
-      if (openPlayerNeighbors.length === 0) return selfState.curCellIndex;
-
-      const closest = minBy(openPlayerNeighbors, (index) =>
-        getTaxicabDistance(selfState.curCellIndex, index, gameBoardCellsX)
-      ) as number;
-
-      return closest;
+      return closestOpenPlayerNeighbor;
     },
   },
 ];

@@ -1,6 +1,12 @@
 import { directions, gameBoardCellsX, gameBoardCellsY } from "../constants";
+import { minBy } from "../minMax";
 import { Cell, Coordinates } from "../types/gameStateTypes";
-import { coordsToFlatIndex, flatIndexToCoords } from "../utility";
+import {
+  coordsToFlatIndex,
+  flatIndexToCoords,
+  getTaxicabDistance,
+  getTrueDistance,
+} from "../utility";
 import { Direction } from "./types";
 
 export function getEnemyWalkableGrid(cells: Cell[]): boolean[][] {
@@ -141,4 +147,23 @@ export function getOpenNeighbors(centerIndex: number, cells: Cell[]) {
     return cell.characterHere === undefined && cell.cellObject === undefined;
   }) as number[]; //ts doesn't know that undefined has been filtered out
   return open;
+}
+
+export function getClosestOpenNeighbor(
+  refIndex: number,
+  neighborCenterIndex: number,
+  cells: Cell[],
+  useTrueDistance: boolean = false
+) {
+  const neighborIndices = getOpenNeighbors(neighborCenterIndex, cells);
+  if (neighborIndices.length === 0) return refIndex;
+
+  const distanceFunction = useTrueDistance
+    ? getTrueDistance
+    : getTaxicabDistance;
+  const closest = minBy(neighborIndices, (index) =>
+    distanceFunction(refIndex, index, gameBoardCellsX)
+  ) as number; //if we reach this, we know neighborIndices has at least one value, so closest WILL be defined
+
+  return closest;
 }
