@@ -6,6 +6,7 @@ export function cloneCharacters(state: GameState): CharacterState[] {
     curCellIndex: char.curCellIndex,
     health: char.health,
     id: char.id,
+    timer: char.timer,
   }));
 }
 

@@ -1,41 +1,51 @@
-import { directions, gameBoardCellsX } from "../constants";
-import { getLineOfCells, getLinesOfSightFlat } from "../gridLogic/helpers";
+import { bombThrowDelay, gameBoardCellsX } from "../constants";
+import { getLinesOfSightFlat, getOpenNeighbors } from "../gridLogic/helpers";
 import { minBy } from "../minMax";
+import { standardAttackPlayerMutator } from "../redux/gameMutators";
 import { Cell, EnemyData, EnemyType } from "../types/gameStateTypes";
-import { getTaxicabDistance } from "../utility";
+import {
+  flatIndexToCoords,
+  getTaxicabDistance,
+  getTrueDistance,
+} from "../utility";
 
 export const characterData: EnemyData[] = [
   {
     type: "none",
     attackRange: 0,
-    chooseAttackIndex: () => 0,
+    timerDirection: "none",
     chooseMovementIndex: () => 0,
-    getAttackableIndices: () => [],
-    canAttackPlayer: () => false,
+    tryAttackPlayer: () => false,
   },
   {
     type: "archer",
     attackRange: 4,
-    canAttackPlayer(selfState, playerState, cells) {
-      const linesOfSight = directions
-        .map((direction) =>
-          getLineOfCells(
-            cells,
-            direction,
-            selfState.curCellIndex,
-            this.attackRange,
-            standardSightBlockingFn
-          )
-        )
-        .flat();
+    timerDirection: "none",
+    tryAttackPlayer(
+      mutableSelfState,
+      mutablePlayerState,
+      mutableCells,
+      walkableGrid
+    ) {
+      const linesOfSight = getLinesOfSightFlat(
+        mutableCells,
+        mutableSelfState.curCellIndex,
+        this.attackRange,
+        standardSightBlockingFn
+      );
       const visiblePlayerCell = linesOfSight.find(
-        (cell) => cell === cells[playerState.curCellIndex]
+        (cell) => cell === mutableCells[mutablePlayerState.curCellIndex]
       );
 
-      return visiblePlayerCell !== undefined;
-    },
-    chooseAttackIndex(_, playerState) {
-      return playerState.curCellIndex;
+      const canAttack = visiblePlayerCell !== undefined;
+      if (!canAttack) return false;
+
+      standardAttackPlayerMutator(
+        mutablePlayerState,
+        mutableSelfState,
+        walkableGrid
+      );
+      return true;
     },
     chooseMovementIndex(selfState, playerState, cells) {
       const cellsToAttackFrom = getLinesOfSightFlat(
@@ -57,14 +67,63 @@ export const characterData: EnemyData[] = [
       });
       return closest || selfState.curCellIndex;
     },
-    getAttackableIndices(selfState, cells) {
-      const attackableCells = getLinesOfSightFlat(
-        cells,
-        selfState.curCellIndex,
-        this.attackRange,
-        standardSightBlockingFn
+  },
+  {
+    type: "bomber",
+    attackRange: 2,
+    timerDirection: "decrement",
+    tryAttackPlayer(
+      mutableSelfState,
+      mutablePlayerState,
+      mutableCells,
+      walkableGrid
+    ) {
+      if (mutableSelfState.timer > 0) {
+        return false;
+      }
+      const validTargetIndices = getOpenNeighbors(
+        mutablePlayerState.curCellIndex,
+        mutableCells
       );
-      return attackableCells.map((cell) => cells.indexOf(cell));
+      if (validTargetIndices.length === 0) return false;
+
+      const closest = minBy(validTargetIndices, (index) =>
+        getTrueDistance(mutableSelfState.curCellIndex, index, gameBoardCellsX)
+      ) as number; //if we reach this, validTargetIndices has at least one value, so this WILL be defined
+      const { distance, deltaX, deltaY } = getTaxicabDistance(
+        mutableSelfState.curCellIndex,
+        closest,
+        gameBoardCellsX
+      );
+      const closeEnough =
+        distance <= this.attackRange + 1 &&
+        deltaX <= this.attackRange &&
+        deltaY <= this.attackRange;
+      if (!closeEnough) return false;
+
+      mutableCells[closest].cellObject = {
+        type: "bomb",
+      };
+      const coords = flatIndexToCoords(
+        mutableSelfState.curCellIndex,
+        gameBoardCellsX
+      );
+      walkableGrid[coords.y][coords.x] = false;
+      mutableSelfState.timer = bombThrowDelay;
+      return true;
+    },
+    chooseMovementIndex(selfState, playerState, cells) {
+      const openPlayerNeighbors = getOpenNeighbors(
+        playerState.curCellIndex,
+        cells
+      );
+      if (openPlayerNeighbors.length === 0) return selfState.curCellIndex;
+
+      const closest = minBy(openPlayerNeighbors, (index) =>
+        getTaxicabDistance(selfState.curCellIndex, index, gameBoardCellsX)
+      ) as number;
+
+      return closest;
     },
   },
 ];

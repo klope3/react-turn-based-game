@@ -46,6 +46,18 @@ export function getTaxicabDistance(
   };
 }
 
+export function getTrueDistance(
+  cellIndex1: number,
+  cellIndex2: number,
+  gridWidth: number
+) {
+  const { x: x1, y: y1 } = flatIndexToCoords(cellIndex1, gridWidth);
+  const { x: x2, y: y2 } = flatIndexToCoords(cellIndex2, gridWidth);
+  const deltaX = Math.abs(x1 - x2);
+  const deltaY = Math.abs(y1 - y2);
+  return Math.sqrt(deltaX * deltaX + deltaY + deltaY);
+}
+
 export function usePlayer() {
   return useSelector((state: GameState) =>
     state.activeCharacters.find((char) => char.enemyData.type === "none")

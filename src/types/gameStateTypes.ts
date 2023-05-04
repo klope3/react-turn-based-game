@@ -10,27 +10,24 @@ export type CharacterState = {
   curCellIndex: number;
   health: number;
   id: number;
+  timer: number;
 };
 
 export type EnemyData = {
   type: EnemyType;
   attackRange: number;
-  getAttackableIndices: (selfState: CharacterState, cells: Cell[]) => number[];
+  timerDirection: ValueChangeDirection;
+  tryAttackPlayer: (
+    mutableSelfState: CharacterState,
+    mutablePlayerState: CharacterState,
+    mutableCells: Cell[],
+    walkableGrid: boolean[][]
+  ) => boolean;
   chooseMovementIndex: (
     selfState: CharacterState,
     playerState: CharacterState,
     cells: Cell[]
   ) => number;
-  chooseAttackIndex: (
-    selfState: CharacterState,
-    playerState: CharacterState,
-    cells: Cell[]
-  ) => number;
-  canAttackPlayer: (
-    selfState: CharacterState,
-    playerState: CharacterState,
-    cells: Cell[]
-  ) => boolean;
 };
 
 export type Coordinates = {
@@ -47,6 +44,8 @@ export type CellObject = {
   type: CellObjectType;
 };
 
-type CellObjectType = "rock";
+type CellObjectType = "rock" | "bomb";
 
 export type EnemyType = "none" | "melee" | "archer" | "bomber";
+
+type ValueChangeDirection = "increment" | "decrement" | "none";

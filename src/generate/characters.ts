@@ -15,6 +15,7 @@ export function generateCharacters(cells: Cell[], seed: number) {
     curCellIndex: Math.floor(mulberry32(seed) * cells.length),
     health: playerHealthStart,
     id: getNewId(),
+    timer: 0,
   };
   const allIndices = Array.from({ length: cells.length }, (_, i) => i);
   const validIndices = allIndices.filter((i) => {
@@ -40,8 +41,9 @@ export function generateCharacters(cells: Cell[], seed: number) {
     const newCharacter: CharacterState = {
       curCellIndex: validIndices[randIndex],
       health: 1,
-      enemyData: getEnemyData("archer"),
+      enemyData: getEnemyData("bomber"),
       id: getNewId(),
+      timer: 0,
     };
     characters.push(newCharacter);
     cells[validIndices[randIndex]].characterHere = newCharacter;

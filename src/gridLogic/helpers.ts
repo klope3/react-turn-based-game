@@ -105,3 +105,40 @@ function getDeltasForDirection(direction: Direction) {
 
   return deltas;
 }
+
+export function getNeighborIndices(centerIndex: number) {
+  const coords = flatIndexToCoords(centerIndex, gameBoardCellsX);
+
+  const left = coords.x > 0 ? { x: coords.x - 1, y: coords.y } : undefined;
+  const top = coords.y > 0 ? { x: coords.x, y: coords.y - 1 } : undefined;
+  const right =
+    coords.x < gameBoardCellsX - 1
+      ? { x: coords.x + 1, y: coords.y }
+      : undefined;
+  const bottom =
+    coords.y < gameBoardCellsY - 1
+      ? { x: coords.x, y: coords.y + 1 }
+      : undefined;
+
+  return {
+    left: left ? coordsToFlatIndex(left, gameBoardCellsX) : undefined,
+    top: top ? coordsToFlatIndex(top, gameBoardCellsX) : undefined,
+    right: right ? coordsToFlatIndex(right, gameBoardCellsX) : undefined,
+    bottom: bottom ? coordsToFlatIndex(bottom, gameBoardCellsX) : undefined,
+  };
+}
+
+export function getOpenNeighbors(centerIndex: number, cells: Cell[]) {
+  const neighbors = getNeighborIndices(centerIndex);
+  const open = [
+    neighbors.left,
+    neighbors.top,
+    neighbors.right,
+    neighbors.bottom,
+  ].filter((index) => {
+    if (!index) return false;
+    const cell = cells[index];
+    return cell.characterHere === undefined && cell.cellObject === undefined;
+  }) as number[]; //ts doesn't know that undefined has been filtered out
+  return open;
+}

@@ -8,6 +8,7 @@ export const actionTimeDefault = 0.2;
 export const godMode = false;
 export const minSpawnDistanceFromPlayer = 4;
 export const minEnemyCount = 3;
+export const bombThrowDelay = 3;
 export const directions: Direction[] = [
   "west",
   "northwest",
