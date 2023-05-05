@@ -46,7 +46,7 @@ export type CellObject = {
   imagePath: string;
 };
 
-type CellObjectType = "rock" | "bomb";
+export type CellObjectType = "rock" | "bomb";
 
 export type EnemyType = "none" | "melee" | "archer" | "bomber";
 

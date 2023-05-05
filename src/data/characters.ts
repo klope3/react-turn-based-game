@@ -12,6 +12,7 @@ import {
   getTaxicabDistance,
 } from "../utility";
 import { characters } from "./assetPaths";
+import { getCellObjectData } from "./cellObjects";
 
 export const characterData: EnemyData[] = [
   {
@@ -138,10 +139,8 @@ export const characterData: EnemyData[] = [
         deltaY <= this.attackRange;
       if (!closeEnough) return false;
 
-      mutableCells[closestOpenPlayerNeighbor].cellObject = {
-        type: "bomb",
-        imagePath: "",
-      };
+      mutableCells[closestOpenPlayerNeighbor].cellObject =
+        getCellObjectData("bomb");
       const coords = flatIndexToCoords(
         mutableSelfState.curCellIndex,
         gameBoardCellsX

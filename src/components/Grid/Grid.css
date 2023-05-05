@@ -15,14 +15,3 @@
 .cell-frame {
   border: 1px solid black;
 }
-
-.bomb::before {
-  content: "";
-  position: absolute;
-  left: 40%;
-  right: 40%;
-  top: 40%;
-  bottom: 40%;
-  background-color: orange;
-  rotate: 45deg;
-}
