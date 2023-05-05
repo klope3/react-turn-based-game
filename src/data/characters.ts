@@ -11,12 +11,14 @@ import {
   flatIndexToCoords,
   getTaxicabDistance,
 } from "../utility";
+import { characters } from "./assetPaths";
 
 export const characterData: EnemyData[] = [
   {
     type: "none",
     attackRange: 0,
     timerDirection: "none",
+    imagePath: characters.player,
     chooseMovementIndex: () => 0,
     tryAttackPlayer: () => false,
   },
@@ -24,6 +26,7 @@ export const characterData: EnemyData[] = [
     type: "melee",
     attackRange: 1,
     timerDirection: "none",
+    imagePath: characters.melee,
     chooseMovementIndex(selfState, playerState, cells) {
       const closestOpenPlayerNeighbor = getClosestOpenNeighbor(
         selfState.curCellIndex,
@@ -53,6 +56,7 @@ export const characterData: EnemyData[] = [
     type: "archer",
     attackRange: 4,
     timerDirection: "none",
+    imagePath: characters.archer,
     tryAttackPlayer(
       mutableSelfState,
       mutablePlayerState,
@@ -104,6 +108,7 @@ export const characterData: EnemyData[] = [
     type: "bomber",
     attackRange: 2,
     timerDirection: "decrement",
+    imagePath: characters.bomber,
     tryAttackPlayer(
       mutableSelfState,
       mutablePlayerState,
@@ -135,6 +140,7 @@ export const characterData: EnemyData[] = [
 
       mutableCells[closestOpenPlayerNeighbor].cellObject = {
         type: "bomb",
+        imagePath: "",
       };
       const coords = flatIndexToCoords(
         mutableSelfState.curCellIndex,

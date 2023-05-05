@@ -1,25 +1,5 @@
 .character {
   position: absolute;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  background-color: lightgray;
   translate: -50% -50%;
-  z-index: 10;
-}
-
-.character.player {
-  background-color: lightgreen;
-}
-
-.character.melee {
-  background-color: red;
-}
-
-.character.archer {
-  background-color: yellow;
-}
-
-.character.bomber {
-  background-color: purple;
+  z-index: 20;
 }
