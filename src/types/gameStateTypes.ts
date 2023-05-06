@@ -9,6 +9,7 @@ export type CharacterState = {
   enemyData: EnemyData;
   curCellIndex: number;
   health: number;
+  healthCapacity: number;
   id: number;
   timer: number;
 };

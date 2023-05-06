@@ -1,6 +1,7 @@
 const assetPath = "/src/assets";
 const charPath = `${assetPath}/characters`;
 const envPath = `${assetPath}/environment`;
+const uiPath = `${assetPath}/ui`;
 
 export const characters = {
   player: `${charPath}/player.png`,
@@ -13,4 +14,9 @@ export const environment = {
   groundRock1: `${envPath}/ground_rock1.png`,
   objRock1: `${envPath}/obj_rock1.png`,
   bomb: `${envPath}/bomb.png`,
+};
+
+export const ui = {
+  heartFull: `${uiPath}/heart_full.png`,
+  heartEmpty: `${uiPath}/heart_empty.png`,
 };

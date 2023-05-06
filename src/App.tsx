@@ -4,6 +4,7 @@ import { Grid } from "./components/Grid/Grid";
 import { displayWidth } from "./constants";
 import { useSelector } from "react-redux/es/exports";
 import { GameState } from "./types/gameStateTypes";
+import { HealthDisplay } from "./components/UI/HealthDisplay";
 
 function App() {
   const style = {
@@ -19,7 +20,12 @@ function App() {
           <Character key={char.id} data={char} />
         ))}
         <Grid />
-        {player && <div>Player Health: {player.health}</div>}
+        {player && (
+          <HealthDisplay
+            healthCapacity={player.healthCapacity}
+            healthCurrent={player.health}
+          />
+        )}
         {!player && <div>GAME OVER</div>}
       </div>
     </>
