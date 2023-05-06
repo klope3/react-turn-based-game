@@ -1,12 +1,16 @@
+:root {
+  --color-bg: rgb(37, 37, 37);
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  background-color: rgb(37, 37, 37);
+  background-color: var(--color-bg);
 }
 
-.board-container {
+.app-container {
   position: relative;
   margin: auto;
 }

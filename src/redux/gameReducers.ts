@@ -3,9 +3,11 @@ import { getEnemyWalkableGrid } from "../gridLogic/helpers";
 import {
   BasicAction,
   CLICK_CELL,
+  CLICK_WORLD_CELL,
   ENEMY_TURN,
   MOVE_PLAYER,
   TOGGLE_INPUT,
+  TOGGLE_WORLD_MAP,
   UPDATE_CELL_OBJECTS,
 } from "../types/actionTypes";
 import { GameState } from "../types/gameStateTypes";
@@ -33,6 +35,13 @@ export function gameReducer(
       };
     case UPDATE_CELL_OBJECTS:
       return updateCellObjectsReducer(state);
+    case TOGGLE_WORLD_MAP:
+      return {
+        ...state,
+        showWorldMap: !state.showWorldMap,
+      };
+    case CLICK_WORLD_CELL:
+      return clickWorldCellReducer(state, action);
     default:
       return state;
   }
@@ -43,6 +52,17 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
   return {
     ...state,
     selectedCellIndex: clickedIndex,
+  };
+}
+
+function clickWorldCellReducer(
+  state: GameState,
+  action: BasicAction
+): GameState {
+  const clickedIndex = action.value;
+  return {
+    ...state,
+    selectedWorldMapIndex: clickedIndex,
   };
 }
 

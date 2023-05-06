@@ -18,7 +18,7 @@ export function animateFromTo(
   selector: string = "",
   deleteAtEnd: boolean = false
 ) {
-  const boardContainer = document.querySelector(".board-container");
+  const boardContainer = document.querySelector(".app-container");
   const element = document.createElement("div");
   const originCoords = flatIndexToCoords(cellIndexOrigin, gameBoardCellsX);
   const targetCoords = flatIndexToCoords(cellIndexTarget, gameBoardCellsX);
@@ -45,7 +45,7 @@ export function animateFromTo(
 }
 
 export function animateExplosionAt(cellIndex: number) {
-  const boardContainer = document.querySelector(".board-container");
+  const boardContainer = document.querySelector(".app-container");
   const expElement = document.createElement("div");
   const coords = flatIndexToCoords(cellIndex, gameBoardCellsX);
 

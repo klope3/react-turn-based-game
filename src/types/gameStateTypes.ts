@@ -3,6 +3,10 @@ export type GameState = {
   activeCharacters: CharacterState[];
   userInput: boolean;
   cells: Cell[];
+  showWorldMap: boolean;
+  visitedWorldMapIndices: number[];
+  selectedWorldMapIndex: number | undefined;
+  playerCurrentWorldIndex: number;
 };
 
 export type CharacterState = {
@@ -52,3 +56,14 @@ export type CellObjectType = "rock" | "bomb";
 export type EnemyType = "none" | "melee" | "archer" | "bomber";
 
 type ValueChangeDirection = "increment" | "decrement" | "none";
+
+export type WorldMapCell = {
+  data: WorldRegionData;
+  visited: false;
+};
+
+type WorldRegionData = {
+  type: WorldRegionType;
+};
+
+type WorldRegionType = "wasteland";

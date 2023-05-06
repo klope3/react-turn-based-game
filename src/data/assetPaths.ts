@@ -22,4 +22,6 @@ export const environment = {
 export const ui = {
   heartFull: `${uiPath}/heart_full.png`,
   heartEmpty: `${uiPath}/heart_empty.png`,
+  visited: `${uiPath}/visited.png`,
+  visitable: `${uiPath}/visitable.png`,
 };

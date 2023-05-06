@@ -4,6 +4,8 @@ import {
   ENEMY_TURN,
   MOVE_PLAYER,
   UPDATE_CELL_OBJECTS,
+  TOGGLE_WORLD_MAP,
+  CLICK_WORLD_CELL,
 } from "../types/actionTypes";
 
 export function clickCell(clickedIndex: number) {
@@ -35,5 +37,18 @@ export function toggleInput() {
 export function updateCellObjects() {
   return {
     type: UPDATE_CELL_OBJECTS,
+  };
+}
+
+export function toggleWorldMap() {
+  return {
+    type: TOGGLE_WORLD_MAP,
+  };
+}
+
+export function clickWorldCell(clickedIndex: number) {
+  return {
+    type: CLICK_WORLD_CELL,
+    value: clickedIndex,
   };
 }
