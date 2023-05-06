@@ -1,5 +1,8 @@
 import { gameBoardCellsX, godMode } from "../constants";
-import { deleteElementWithSelectorAt } from "../dynamicObjects";
+import {
+  animateExplosionAt,
+  deleteElementWithSelectorAt,
+} from "../dynamicObjects";
 import { getNeighborIndices } from "../gridLogic/helpers";
 import { getPathForEnemy } from "../gridLogic/movement";
 import { Cell, CharacterState } from "../types/gameStateTypes";
@@ -66,4 +69,5 @@ export function explosionMutator(
 
   const coords = flatIndexToCoords(explosionCellIndex, gameBoardCellsX);
   deleteElementWithSelectorAt(".bomb", coords);
+  animateExplosionAt(explosionCellIndex);
 }

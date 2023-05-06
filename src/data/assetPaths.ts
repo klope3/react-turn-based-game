@@ -14,6 +14,8 @@ export const environment = {
   groundRock1: `${envPath}/ground_rock1.png`,
   objRock1: `${envPath}/obj_rock1.png`,
   bomb: `${envPath}/bomb.png`,
+  explosionBlue1: `${envPath}/explosion_blue_1.png`,
+  explosionBlue2: `${envPath}/explosion_blue_2.png`,
 };
 
 export const ui = {
