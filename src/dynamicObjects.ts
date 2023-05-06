@@ -7,19 +7,27 @@ import { flatIndexToCoords } from "./utility";
 //? Methods with React and Redux seemed too clumsy.
 //? Maybe a better solution will be found in future?
 
+//TODO: Currently the use of background-image causes some delay in image loading. Consider use of sprite sheets in future.
+
 const squareSize = displayWidth / gameBoardCellsX;
 
-export function throwBomb(cellIndexOrigin: number, cellIndexTarget: number) {
+export function animateFromTo(
+  cellIndexOrigin: number,
+  cellIndexTarget: number,
+  imagePath: string,
+  selector: string = "",
+  deleteAtEnd: boolean = false
+) {
   const boardContainer = document.querySelector(".board-container");
-  const bombElement = document.createElement("div");
+  const element = document.createElement("div");
   const originCoords = flatIndexToCoords(cellIndexOrigin, gameBoardCellsX);
   const targetCoords = flatIndexToCoords(cellIndexTarget, gameBoardCellsX);
 
-  bombElement.className = "stretch-bg pixelate bomb";
-  bombElement.dataset.coords = `${targetCoords.x}, ${targetCoords.y}`;
+  element.className = `stretch-bg pixelate ${selector}`;
+  element.dataset.coords = `${targetCoords.x}, ${targetCoords.y}`;
 
-  const style = bombElement.style;
-  style.backgroundImage = `url("${environment.bomb}")`;
+  const style = element.style;
+  style.backgroundImage = `url("${imagePath}")`;
   setStandardSize(style);
   style.position = "absolute";
   setCoordsPosition(style, originCoords);
@@ -27,8 +35,13 @@ export function throwBomb(cellIndexOrigin: number, cellIndexTarget: number) {
   setTimeout(() => {
     setCoordsPosition(style, targetCoords);
   }, 1);
+  if (deleteAtEnd) {
+    setTimeout(() => {
+      element.remove();
+    }, actionTimeDefault * 1000);
+  }
 
-  boardContainer?.appendChild(bombElement);
+  boardContainer?.appendChild(element);
 }
 
 export function animateExplosionAt(cellIndex: number) {
@@ -41,6 +54,7 @@ export function animateExplosionAt(cellIndex: number) {
   const style = expElement.style;
   style.backgroundImage = `url("${environment.explosionBlue1}")`;
   style.position = "absolute";
+  style.zIndex = "20";
   setStandardSize(style);
   setCoordsPosition(style, coords);
   const delay = 70;

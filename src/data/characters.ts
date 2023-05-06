@@ -1,5 +1,9 @@
-import { bombThrowDelay, gameBoardCellsX } from "../constants";
-import { throwBomb } from "../dynamicObjects";
+import {
+  actionTimeDefault,
+  bombThrowDelay,
+  gameBoardCellsX,
+} from "../constants";
+import { animateExplosionAt, animateFromTo } from "../dynamicObjects";
 import {
   getClosestOpenNeighbor,
   getLinesOfSightFlat,
@@ -12,7 +16,7 @@ import {
   flatIndexToCoords,
   getTaxicabDistance,
 } from "../utility";
-import { characters } from "./assetPaths";
+import { characters, environment } from "./assetPaths";
 import { getCellObjectData } from "./cellObjects";
 
 export const characterData: EnemyData[] = [
@@ -83,6 +87,16 @@ export const characterData: EnemyData[] = [
         mutableSelfState,
         walkableGrid
       );
+      animateFromTo(
+        mutableSelfState.curCellIndex,
+        mutablePlayerState.curCellIndex,
+        environment.orbBlue,
+        "",
+        true
+      );
+      setTimeout(() => {
+        animateExplosionAt(mutablePlayerState.curCellIndex);
+      }, actionTimeDefault * 1000);
       return true;
     },
     chooseMovementIndex(selfState, playerState, cells) {
@@ -142,7 +156,12 @@ export const characterData: EnemyData[] = [
 
       mutableCells[closestOpenPlayerNeighbor].cellObject =
         getCellObjectData("bomb");
-      throwBomb(mutableSelfState.curCellIndex, closestOpenPlayerNeighbor);
+      animateFromTo(
+        mutableSelfState.curCellIndex,
+        closestOpenPlayerNeighbor,
+        environment.bomb,
+        "bomb"
+      );
       const coords = flatIndexToCoords(
         mutableSelfState.curCellIndex,
         gameBoardCellsX
