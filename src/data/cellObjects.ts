@@ -8,7 +8,7 @@ export const cellObjects: CellObject[] = [
   },
   {
     type: "bomb",
-    imagePath: environment.bomb,
+    imagePath: "",
   },
 ];
 

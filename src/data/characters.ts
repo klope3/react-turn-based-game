@@ -1,4 +1,5 @@
 import { bombThrowDelay, gameBoardCellsX } from "../constants";
+import { throwBomb } from "../dynamicObjects";
 import {
   getClosestOpenNeighbor,
   getLinesOfSightFlat,
@@ -141,6 +142,7 @@ export const characterData: EnemyData[] = [
 
       mutableCells[closestOpenPlayerNeighbor].cellObject =
         getCellObjectData("bomb");
+      throwBomb(mutableSelfState.curCellIndex, closestOpenPlayerNeighbor);
       const coords = flatIndexToCoords(
         mutableSelfState.curCellIndex,
         gameBoardCellsX
