@@ -14,6 +14,7 @@ export function generateCharacters(cells: Cell[], seed: number) {
     enemyData: getEnemyData("none"),
     curCellIndex: Math.floor(mulberry32(seed) * cells.length),
     health: playerHealthStart,
+    healthCapacity: playerHealthStart,
     id: getNewId(),
     timer: 0,
   };
@@ -42,6 +43,7 @@ export function generateCharacters(cells: Cell[], seed: number) {
     const newCharacter: CharacterState = {
       curCellIndex: validIndices[randIndex],
       health: 1,
+      healthCapacity: 1,
       enemyData: getEnemyData(randType),
       id: getNewId(),
       timer: 0,

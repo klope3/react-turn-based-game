@@ -9,6 +9,7 @@ export type CharacterState = {
   enemyData: EnemyData;
   curCellIndex: number;
   health: number;
+  healthCapacity: number;
   id: number;
   timer: number;
 };
@@ -17,6 +18,7 @@ export type EnemyData = {
   type: EnemyType;
   attackRange: number;
   timerDirection: ValueChangeDirection;
+  imagePath: string;
   tryAttackPlayer: (
     mutableSelfState: CharacterState,
     mutablePlayerState: CharacterState,
@@ -42,9 +44,10 @@ export type Cell = {
 
 export type CellObject = {
   type: CellObjectType;
+  imagePath: string;
 };
 
-type CellObjectType = "rock" | "bomb";
+export type CellObjectType = "rock" | "bomb";
 
 export type EnemyType = "none" | "melee" | "archer" | "bomber";
 

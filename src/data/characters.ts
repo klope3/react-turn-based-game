@@ -1,4 +1,9 @@
-import { bombThrowDelay, gameBoardCellsX } from "../constants";
+import {
+  actionTimeDefault,
+  bombThrowDelay,
+  gameBoardCellsX,
+} from "../constants";
+import { animateExplosionAt, animateFromTo } from "../dynamicObjects";
 import {
   getClosestOpenNeighbor,
   getLinesOfSightFlat,
@@ -11,12 +16,15 @@ import {
   flatIndexToCoords,
   getTaxicabDistance,
 } from "../utility";
+import { characters, environment } from "./assetPaths";
+import { getCellObjectData } from "./cellObjects";
 
 export const characterData: EnemyData[] = [
   {
     type: "none",
     attackRange: 0,
     timerDirection: "none",
+    imagePath: characters.player,
     chooseMovementIndex: () => 0,
     tryAttackPlayer: () => false,
   },
@@ -24,6 +32,7 @@ export const characterData: EnemyData[] = [
     type: "melee",
     attackRange: 1,
     timerDirection: "none",
+    imagePath: characters.melee,
     chooseMovementIndex(selfState, playerState, cells) {
       const closestOpenPlayerNeighbor = getClosestOpenNeighbor(
         selfState.curCellIndex,
@@ -53,6 +62,7 @@ export const characterData: EnemyData[] = [
     type: "archer",
     attackRange: 4,
     timerDirection: "none",
+    imagePath: characters.archer,
     tryAttackPlayer(
       mutableSelfState,
       mutablePlayerState,
@@ -77,6 +87,16 @@ export const characterData: EnemyData[] = [
         mutableSelfState,
         walkableGrid
       );
+      animateFromTo(
+        mutableSelfState.curCellIndex,
+        mutablePlayerState.curCellIndex,
+        environment.orbBlue,
+        "",
+        true
+      );
+      setTimeout(() => {
+        animateExplosionAt(mutablePlayerState.curCellIndex);
+      }, actionTimeDefault * 1000);
       return true;
     },
     chooseMovementIndex(selfState, playerState, cells) {
@@ -104,6 +124,7 @@ export const characterData: EnemyData[] = [
     type: "bomber",
     attackRange: 2,
     timerDirection: "decrement",
+    imagePath: characters.bomber,
     tryAttackPlayer(
       mutableSelfState,
       mutablePlayerState,
@@ -133,9 +154,14 @@ export const characterData: EnemyData[] = [
         deltaY <= this.attackRange;
       if (!closeEnough) return false;
 
-      mutableCells[closestOpenPlayerNeighbor].cellObject = {
-        type: "bomb",
-      };
+      mutableCells[closestOpenPlayerNeighbor].cellObject =
+        getCellObjectData("bomb");
+      animateFromTo(
+        mutableSelfState.curCellIndex,
+        closestOpenPlayerNeighbor,
+        environment.bomb,
+        "bomb"
+      );
       const coords = flatIndexToCoords(
         mutableSelfState.curCellIndex,
         gameBoardCellsX
