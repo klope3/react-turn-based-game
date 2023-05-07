@@ -6,6 +6,7 @@ import {
   UPDATE_CELL_OBJECTS,
   TOGGLE_WORLD_MAP,
   CLICK_WORLD_CELL,
+  LOAD_WORLD_REGION,
 } from "../types/actionTypes";
 
 export function clickCell(clickedIndex: number) {
@@ -50,5 +51,12 @@ export function clickWorldCell(clickedIndex: number) {
   return {
     type: CLICK_WORLD_CELL,
     value: clickedIndex,
+  };
+}
+
+export function loadWorldRegionIndex(regionIndex: number) {
+  return {
+    type: LOAD_WORLD_REGION,
+    value: regionIndex,
   };
 }

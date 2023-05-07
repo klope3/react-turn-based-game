@@ -1,16 +1,19 @@
 import { gameBoardCellsX, gameBoardCellsY } from "../constants";
+import { generateCharacters } from "../generate/characters";
+import { generateCells } from "../generate/environment";
 import { getEnemyWalkableGrid } from "../gridLogic/helpers";
 import {
   BasicAction,
   CLICK_CELL,
   CLICK_WORLD_CELL,
   ENEMY_TURN,
+  LOAD_WORLD_REGION,
   MOVE_PLAYER,
   TOGGLE_INPUT,
   TOGGLE_WORLD_MAP,
   UPDATE_CELL_OBJECTS,
 } from "../types/actionTypes";
-import { GameState } from "../types/gameStateTypes";
+import { CharacterState, GameState } from "../types/gameStateTypes";
 import { cloneCells, cloneCharacters } from "./cloners";
 import { explosionMutator, singleEnemyMoveMutator } from "./gameMutators";
 import { getInitialState } from "./initialState";
@@ -42,6 +45,8 @@ export function gameReducer(
       };
     case CLICK_WORLD_CELL:
       return clickWorldCellReducer(state, action);
+    case LOAD_WORLD_REGION:
+      return loadWorldRegionReducer(state, action);
     default:
       return state;
   }
@@ -52,6 +57,35 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
   return {
     ...state,
     selectedCellIndex: clickedIndex,
+  };
+}
+
+function loadWorldRegionReducer(
+  state: GameState,
+  action: BasicAction
+): GameState {
+  console.log("loading region " + action.value);
+  const regionIndex = action.value;
+  const newCells = generateCells(state.seed, regionIndex);
+  const newCharacters = generateCharacters(newCells, state.seed, regionIndex);
+  const prevPlayer = state.activeCharacters.find(
+    (char) => char.enemyData.type === "none"
+  ) as CharacterState;
+  const clonedPlayer = { ...prevPlayer };
+  const playerToReplace = newCharacters.find(
+    (char) => char.enemyData.type === "none"
+  ) as CharacterState;
+  const playerToReplaceIndex = newCharacters.indexOf(playerToReplace);
+  newCharacters[playerToReplaceIndex] = clonedPlayer;
+  const newVisited = [...state.visitedWorldMapIndices, regionIndex];
+
+  return {
+    ...state,
+    showWorldMap: false,
+    activeCharacters: newCharacters,
+    cells: newCells,
+    playerCurrentWorldIndex: regionIndex,
+    visitedWorldMapIndices: newVisited,
   };
 }
 

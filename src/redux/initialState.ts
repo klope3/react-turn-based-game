@@ -30,6 +30,7 @@ export function getInitialState(): GameState {
     visitedWorldMapIndices: [playerWorldStartIndex],
     selectedWorldMapIndex: undefined,
     playerCurrentWorldIndex: playerWorldStartIndex,
+    seed,
   };
   return initialState;
 }

@@ -13,3 +13,4 @@ export const TOGGLE_INPUT = "toggleInput";
 export const UPDATE_CELL_OBJECTS = "updateCellObjects";
 export const TOGGLE_WORLD_MAP = "toggleWorldMap";
 export const CLICK_WORLD_CELL = "clickWorldCell";
+export const LOAD_WORLD_REGION = "loadWorldRegion";
