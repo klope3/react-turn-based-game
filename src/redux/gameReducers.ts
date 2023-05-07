@@ -4,6 +4,7 @@ import {
   worldMapCellsX,
   worldMapCellsY,
 } from "../constants";
+import { loadStateFromSave } from "../data/saveLoad";
 import { generateCharacters } from "../generate/characters";
 import { generateCells } from "../generate/environment";
 import {
@@ -15,6 +16,7 @@ import {
   CLICK_CELL,
   CLICK_WORLD_CELL,
   ENEMY_TURN,
+  LOAD_SAVE_GAME,
   LOAD_WORLD_REGION,
   MOVE_PLAYER,
   TOGGLE_INPUT,
@@ -55,6 +57,8 @@ export function gameReducer(
       return clickWorldCellReducer(state, action);
     case LOAD_WORLD_REGION:
       return loadWorldRegionReducer(state, action);
+    case LOAD_SAVE_GAME:
+      return loadSaveGameReducer(state);
     default:
       return state;
   }
@@ -66,6 +70,16 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
     ...state,
     selectedCellIndex: clickedIndex,
   };
+}
+
+function loadSaveGameReducer(state: GameState): GameState {
+  const loadedState = loadStateFromSave();
+  if (!loadedState) {
+    console.log("Couldn't find any valid save data");
+    return state;
+  }
+
+  return loadedState;
 }
 
 function loadWorldRegionReducer(
@@ -119,7 +133,7 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
   const playerPrevCellIndex = newPlayer.curCellIndex;
   const playerTargetCellIndex = action.value;
 
-  const newCells = cloneCells(state);
+  const newCells = cloneCells(state, newCharacters);
   const characterOccupyingTarget = newCharacters.find(
     (char) => char.curCellIndex === playerTargetCellIndex
   );
@@ -153,7 +167,7 @@ function enemyTurnReducer(state: GameState): GameState {
   );
   if (!newPlayer) return state;
 
-  const newCells = cloneCells(state);
+  const newCells = cloneCells(state, newCharacters);
   const walkableGrid = getEnemyWalkableGrid(state.cells);
 
   for (let i = 0; i < newCharacters.length; i++) {
@@ -189,8 +203,8 @@ function enemyTurnReducer(state: GameState): GameState {
 }
 
 function updateCellObjectsReducer(state: GameState): GameState {
-  const newCells = cloneCells(state);
   const newCharacters = cloneCharacters(state);
+  const newCells = cloneCells(state, newCharacters);
 
   const allIndices = Array.from(
     { length: gameBoardCellsX * gameBoardCellsY },

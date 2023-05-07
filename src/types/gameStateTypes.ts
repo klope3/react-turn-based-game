@@ -68,3 +68,21 @@ type WorldRegionData = {
 };
 
 type WorldRegionType = "wasteland";
+
+export type SaveData = {
+  seed: number;
+  savedCharacters: SavedCharacter[];
+  savedCells: SavedCell[];
+  visitedWorldMapIndices: number[];
+  playerCurrentWorldIndex: number;
+};
+
+export type SavedCharacter = Omit<CharacterState, "enemyData"> & {
+  enemyType: EnemyType;
+};
+
+export type SavedCell = {
+  cellObjectType: CellObjectType | undefined;
+  savedCharacterId: number | undefined;
+  cellIndex: number;
+};

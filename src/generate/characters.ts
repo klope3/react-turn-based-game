@@ -23,6 +23,7 @@ export function generateCharacters(
     id: getNewId(),
     timer: 0,
   };
+  cells[player.curCellIndex].characterHere = player;
   const allIndices = Array.from({ length: cells.length }, (_, i) => i);
   const validIndices = allIndices.filter((i) => {
     const objHere = cells[i].cellObject;

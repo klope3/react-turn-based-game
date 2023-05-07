@@ -11,9 +11,12 @@ export function cloneCharacters(state: GameState): CharacterState[] {
   }));
 }
 
-export function cloneCells(state: GameState): Cell[] {
-  return state.cells.map((cell) => ({
-    characterHere: cell.characterHere,
+export function cloneCells(
+  state: GameState,
+  clonedCharacters: CharacterState[]
+): Cell[] {
+  return state.cells.map((cell, i) => ({
+    characterHere: clonedCharacters.find((char) => char.curCellIndex === i),
     cellObject: cell.cellObject,
   }));
 }

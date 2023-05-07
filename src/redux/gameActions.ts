@@ -7,6 +7,7 @@ import {
   TOGGLE_WORLD_MAP,
   CLICK_WORLD_CELL,
   LOAD_WORLD_REGION,
+  LOAD_SAVE_GAME,
 } from "../types/actionTypes";
 
 export function clickCell(clickedIndex: number) {
@@ -58,5 +59,11 @@ export function loadWorldRegionIndex(regionIndex: number) {
   return {
     type: LOAD_WORLD_REGION,
     value: regionIndex,
+  };
+}
+
+export function loadSaveGame() {
+  return {
+    type: LOAD_SAVE_GAME,
   };
 }

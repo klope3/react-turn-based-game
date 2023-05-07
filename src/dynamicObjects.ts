@@ -10,6 +10,29 @@ import { flatIndexToCoords } from "./utility";
 //TODO: Currently the use of background-image causes some delay in image loading. Consider use of sprite sheets in future.
 
 const squareSize = displayWidth / gameBoardCellsX;
+const dynObjTag = "dynamic-object";
+
+export function createDynamicObjectAt(
+  cellIndex: number,
+  imagePath: string,
+  selector: string = ""
+) {
+  //TODO: Refactor other dynamic object methods to use this one instead of duplicating code
+  const boardContainer = document.querySelector(".app-container");
+  const element = document.createElement("div");
+  const coords = flatIndexToCoords(cellIndex, gameBoardCellsX);
+
+  element.className = `stretch-bg pixelate ${selector} ${dynObjTag}`;
+  element.dataset.coords = `${coords.x}, ${coords.y}`;
+
+  const style = element.style;
+  style.backgroundImage = `url("${imagePath}")`;
+  setStandardSize(style);
+  style.position = "absolute";
+  setCoordsPosition(style, coords);
+
+  boardContainer?.appendChild(element);
+}
 
 export function animateFromTo(
   cellIndexOrigin: number,
@@ -23,7 +46,7 @@ export function animateFromTo(
   const originCoords = flatIndexToCoords(cellIndexOrigin, gameBoardCellsX);
   const targetCoords = flatIndexToCoords(cellIndexTarget, gameBoardCellsX);
 
-  element.className = `stretch-bg pixelate ${selector}`;
+  element.className = `stretch-bg pixelate ${selector} ${dynObjTag}`;
   element.dataset.coords = `${targetCoords.x}, ${targetCoords.y}`;
 
   const style = element.style;
@@ -49,7 +72,7 @@ export function animateExplosionAt(cellIndex: number) {
   const expElement = document.createElement("div");
   const coords = flatIndexToCoords(cellIndex, gameBoardCellsX);
 
-  expElement.className = "stretch-bg pixelate";
+  expElement.className = `stretch-bg pixelate ${dynObjTag}`;
 
   const style = expElement.style;
   style.backgroundImage = `url("${environment.explosionBlue1}")`;
@@ -124,4 +147,11 @@ function animateImageSequence(
     style.backgroundImage = `url("${path}")`;
   });
   doFunctionSequence(functions, timePerImage);
+}
+
+export function deleteAllDynamicObjects() {
+  const objects = document.querySelectorAll(`.${dynObjTag}`);
+  for (let i = 0; i < objects.length; i++) {
+    objects[i].remove();
+  }
 }

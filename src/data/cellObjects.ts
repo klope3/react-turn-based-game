@@ -12,6 +12,7 @@ export const cellObjects: CellObject[] = [
   },
 ];
 
-export function getCellObjectData(cellObjectType: CellObjectType) {
+export function getCellObjectData(cellObjectType: CellObjectType | undefined) {
+  if (cellObjectType === undefined) return undefined;
   return cellObjects.find((obj) => obj.type === cellObjectType) as CellObject;
 }
