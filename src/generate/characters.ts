@@ -9,10 +9,15 @@ import { Cell, CharacterState } from "../types/gameStateTypes";
 import { getNewId, getRandomInt, getTaxicabDistance } from "../utility";
 import { mulberry32 } from "./random";
 
-export function generateCharacters(cells: Cell[], seed: number) {
+export function generateCharacters(
+  cells: Cell[],
+  seed: number,
+  regionIndex: number
+) {
+  const regionShift = getRandomInt(seed + regionIndex);
   const player: CharacterState = {
     enemyData: getEnemyData("none"),
-    curCellIndex: Math.floor(mulberry32(seed) * cells.length),
+    curCellIndex: Math.floor(mulberry32(regionShift) * cells.length),
     health: playerHealthStart,
     healthCapacity: playerHealthStart,
     id: getNewId(),
@@ -37,9 +42,9 @@ export function generateCharacters(cells: Cell[], seed: number) {
   const characters = [player];
   for (let i = 0; i < minEnemyCount && validIndices.length > 0; i++) {
     const randIndex = Math.floor(
-      mulberry32(i + getRandomInt(seed)) * validIndices.length
+      mulberry32(i + regionShift) * validIndices.length
     );
-    const randType = chooseRandomCharacterType(seed, i + getRandomInt(seed));
+    const randType = chooseRandomCharacterType(seed, i, regionIndex);
     const newCharacter: CharacterState = {
       curCellIndex: validIndices[randIndex],
       health: 1,
@@ -56,12 +61,17 @@ export function generateCharacters(cells: Cell[], seed: number) {
   return characters;
 }
 
-function chooseRandomCharacterType(seed: number, randShift: number) {
+function chooseRandomCharacterType(
+  seed: number,
+  cellIndex: number,
+  regionIndex: number
+) {
+  const regionShift = getRandomInt(seed + regionIndex);
   const typesToChooseFrom = characterData
     .filter((data) => data.type !== "none")
     .map((data) => data.type);
   const randIndex = Math.floor(
-    mulberry32(seed + randShift) * typesToChooseFrom.length
+    mulberry32(cellIndex + regionShift) * typesToChooseFrom.length
   );
   return typesToChooseFrom[randIndex];
 }
