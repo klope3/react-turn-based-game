@@ -1,7 +1,15 @@
-import { gameBoardCellsX, gameBoardCellsY } from "../constants";
+import {
+  gameBoardCellsX,
+  gameBoardCellsY,
+  worldMapCellsX,
+  worldMapCellsY,
+} from "../constants";
 import { generateCharacters } from "../generate/characters";
 import { generateCells } from "../generate/environment";
-import { getEnemyWalkableGrid } from "../gridLogic/helpers";
+import {
+  getEnemyWalkableGrid,
+  getImportantWorldRegionIndices,
+} from "../gridLogic/helpers";
 import {
   BasicAction,
   CLICK_CELL,
@@ -116,6 +124,13 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
   );
   if (characterOccupyingTarget) {
     newCharacters.splice(newCharacters.indexOf(characterOccupyingTarget), 1);
+  }
+  const isFinalRegion =
+    state.playerCurrentWorldIndex ===
+    getImportantWorldRegionIndices(worldMapCellsX, worldMapCellsY).finalRegion;
+  const finalVictory = newCharacters.length === 1 && isFinalRegion;
+  if (finalVictory) {
+    console.log("You beat the final level!");
   }
 
   newPlayer.curCellIndex = playerTargetCellIndex;

@@ -167,3 +167,21 @@ export function getClosestOpenNeighbor(
 
   return closest;
 }
+
+export function getImportantWorldRegionIndices(
+  worldCellsX: number,
+  worldCellsY: number
+) {
+  const startingRegionCoords = {
+    x: Math.floor(worldCellsX / 2),
+    y: worldCellsY - 1,
+  };
+  const finalRegionCoords = {
+    x: startingRegionCoords.x,
+    y: 0,
+  };
+  return {
+    startingRegion: coordsToFlatIndex(startingRegionCoords, worldCellsX),
+    finalRegion: coordsToFlatIndex(finalRegionCoords, worldCellsX),
+  };
+}
