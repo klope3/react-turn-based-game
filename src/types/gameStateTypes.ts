@@ -75,6 +75,7 @@ export type SaveData = {
   savedCells: SavedCell[];
   visitedWorldMapIndices: number[];
   playerCurrentWorldIndex: number;
+  idCounter: number;
 };
 
 export type SavedCharacter = Omit<CharacterState, "enemyData"> & {

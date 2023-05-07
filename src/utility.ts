@@ -9,6 +9,14 @@ export function getNewId() {
   return idCounter;
 }
 
+export function setIdCounter(num: number) {
+  idCounter = num;
+}
+
+export function getIdCounter() {
+  return idCounter;
+}
+
 export function cellIndexToPxOffset(cellIndex: number) {
   const coordinates = flatIndexToCoords(cellIndex, gameBoardCellsX);
   const cellSize = displayWidth / gameBoardCellsX;

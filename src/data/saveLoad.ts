@@ -12,6 +12,7 @@ import {
   SavedCell,
   SavedCharacter,
 } from "../types/gameStateTypes";
+import { getIdCounter, setIdCounter } from "../utility";
 import { environment } from "./assetPaths";
 import { getCellObjectData } from "./cellObjects";
 import { characterData } from "./characters";
@@ -53,6 +54,7 @@ export function saveGame(state: GameState) {
     savedCells: cellsToSave,
     visitedWorldMapIndices: state.visitedWorldMapIndices,
     playerCurrentWorldIndex: state.playerCurrentWorldIndex,
+    idCounter: getIdCounter(),
   };
 
   try {
@@ -115,6 +117,7 @@ export function loadStateFromSave(): GameState | undefined {
     showWorldMap: false,
     visitedWorldMapIndices,
   };
+  setIdCounter(saveData.idCounter);
 
   return rebuiltState;
 }
