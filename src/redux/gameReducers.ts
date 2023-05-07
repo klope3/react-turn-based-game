@@ -83,6 +83,7 @@ function loadWorldRegionReducer(
   const playerToReplace = newCharacters.find(
     (char) => char.enemyData.type === "none"
   ) as CharacterState;
+  clonedPlayer.curCellIndex = playerToReplace.curCellIndex;
   const playerToReplaceIndex = newCharacters.indexOf(playerToReplace);
   newCharacters[playerToReplaceIndex] = clonedPlayer;
   const newVisited = [...state.visitedWorldMapIndices, regionIndex];

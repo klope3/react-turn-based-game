@@ -35,6 +35,10 @@ export function WorldMap() {
   const visitedIndices = useSelector(
     (state: GameState) => state.visitedWorldMapIndices
   );
+  const activeCharacters = useSelector(
+    (state: GameState) => state.activeCharacters
+  );
+  const enemiesDefeated = activeCharacters.length === 1;
   const canBeVisitedIndices = allIndices
     .filter((index) => visitAnyWorldRegion || !visitedIndices.includes(index))
     .filter((checkIndex) =>
@@ -50,6 +54,7 @@ export function WorldMap() {
 
     if (
       +clickedIndex === selectedIndex &&
+      enemiesDefeated &&
       canBeVisitedIndices.includes(+clickedIndex)
     ) {
       dispatch(loadWorldRegionIndex(+clickedIndex));
