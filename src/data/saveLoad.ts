@@ -3,6 +3,7 @@ import {
   deleteAllDynamicObjects,
 } from "../dynamicObjects";
 import { generateCells } from "../generate/environment";
+import { store } from "../redux/gameStore";
 import {
   Cell,
   CharacterState,
@@ -12,11 +13,12 @@ import {
   SavedCell,
   SavedCharacter,
 } from "../types/gameStateTypes";
-import { getIdCounter, setIdCounter } from "../utility";
+import { doIntervalWhile, getIdCounter, setIdCounter } from "../utility";
 import { getCellObjectData } from "./cellObjects";
 import { characterData } from "./characters";
 
-export function saveGame(state: GameState) {
+export function saveGame() {
+  const state = store.getState();
   const charactersToSave: SavedCharacter[] = createCharactersToSave(
     state.activeCharacters
   );
@@ -141,10 +143,21 @@ function rebuildCells(saveData: SaveData, rebuiltCharacters: CharacterState[]) {
 
     const cellObject = rebuiltCell.cellObject;
     if (cellObject && cellObject.recreateOnLoad) {
-      createDynamicObjectAt(
-        savedCell.cellIndex,
-        cellObject.imagePath,
-        cellObject.selector
+      let created = false;
+      //on initial load, the parent for the object might not have been mounted yet.
+      //this would cause the object to never be appended and therefore lost.
+      //keep trying to create the object until it succeeds.
+      doIntervalWhile(
+        () => {
+          created =
+            createDynamicObjectAt(
+              savedCell.cellIndex,
+              cellObject.imagePath,
+              cellObject.selector
+            ) !== undefined;
+        },
+        200,
+        () => !created
       );
     }
   }

@@ -16,7 +16,6 @@ function App() {
   const characters = useSelector((state: GameState) => state.activeCharacters);
   const player = characters.find((char) => char.enemyData.type === "none");
   const showWorldMap = useSelector((state: GameState) => state.showWorldMap);
-  const state = useSelector((state: GameState) => state);
   const dispatch = useDispatch();
 
   return (
@@ -43,7 +42,7 @@ function App() {
         {showWorldMap && <WorldMap />}
         <button
           onClick={() => {
-            saveGame(state);
+            saveGame();
           }}
         >
           Save

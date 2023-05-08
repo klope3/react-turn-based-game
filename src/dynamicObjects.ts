@@ -18,6 +18,8 @@ export function createDynamicObjectAt(
   selector: string = ""
 ) {
   const boardContainer = document.querySelector(".app-container");
+  if (!boardContainer) return undefined;
+
   const element = document.createElement("div");
   const coords = flatIndexToCoords(cellIndex, gameBoardCellsX);
 
@@ -43,6 +45,8 @@ export function animateFromTo(
   deleteAtEnd: boolean = false
 ) {
   const element = createDynamicObjectAt(cellIndexTarget, imagePath, selector);
+  if (!element) return;
+
   const style = element.style;
   style.transition = `${actionTimeDefault}s`;
   const originCoords = flatIndexToCoords(cellIndexOrigin, gameBoardCellsX);
@@ -64,6 +68,8 @@ export function animateExplosionAt(cellIndex: number) {
     cellIndex,
     environment.explosionBlue1
   );
+  if (!expElement) return;
+
   const style = expElement.style;
   style.zIndex = "20";
   const delay = 70;

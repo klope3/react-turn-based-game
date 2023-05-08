@@ -93,3 +93,18 @@ export function getRandomInt(seed: number) {
 export function getNumberArray(firstNum: number, length: number) {
   return Array.from({ length }, (_, i) => i + firstNum);
 }
+
+export function doIntervalWhile(
+  fn: () => void,
+  delay: number,
+  shouldContinueCb: () => boolean
+) {
+  const interval = setInterval(() => {
+    if (!shouldContinueCb()) {
+      clearInterval(interval);
+      return;
+    } else {
+      fn();
+    }
+  }, delay);
+}

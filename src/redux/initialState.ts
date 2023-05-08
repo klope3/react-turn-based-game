@@ -1,4 +1,5 @@
 import { worldMapCellsX, worldMapCellsY } from "../constants";
+import { loadStateFromSave } from "../data/saveLoad";
 import { generateCharacters } from "../generate/characters";
 import { generateCells } from "../generate/environment";
 import { getImportantWorldRegionIndices } from "../gridLogic/helpers";
@@ -6,6 +7,9 @@ import { GameState } from "../types/gameStateTypes";
 
 export function getInitialState(): GameState {
   // TODO: player should be able to choose between random seed at start OR custom seed
+  const savedState = loadStateFromSave();
+  if (savedState) return savedState;
+
   const seed = 0;
   const playerWorldStartIndex = getImportantWorldRegionIndices(
     worldMapCellsX,
