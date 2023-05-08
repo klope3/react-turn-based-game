@@ -17,7 +17,6 @@ export function createDynamicObjectAt(
   imagePath: string,
   selector: string = ""
 ) {
-  //TODO: Refactor other dynamic object methods to use this one instead of duplicating code
   const boardContainer = document.querySelector(".app-container");
   const element = document.createElement("div");
   const coords = flatIndexToCoords(cellIndex, gameBoardCellsX);
@@ -32,6 +31,8 @@ export function createDynamicObjectAt(
   setCoordsPosition(style, coords);
 
   boardContainer?.appendChild(element);
+
+  return element;
 }
 
 export function animateFromTo(
@@ -41,20 +42,13 @@ export function animateFromTo(
   selector: string = "",
   deleteAtEnd: boolean = false
 ) {
-  const boardContainer = document.querySelector(".app-container");
-  const element = document.createElement("div");
+  const element = createDynamicObjectAt(cellIndexTarget, imagePath, selector);
+  const style = element.style;
+  style.transition = `${actionTimeDefault}s`;
   const originCoords = flatIndexToCoords(cellIndexOrigin, gameBoardCellsX);
   const targetCoords = flatIndexToCoords(cellIndexTarget, gameBoardCellsX);
-
-  element.className = `stretch-bg pixelate ${selector} ${dynObjTag}`;
-  element.dataset.coords = `${targetCoords.x}, ${targetCoords.y}`;
-
-  const style = element.style;
-  style.backgroundImage = `url("${imagePath}")`;
-  setStandardSize(style);
-  style.position = "absolute";
   setCoordsPosition(style, originCoords);
-  style.transition = `${actionTimeDefault}s`;
+
   setTimeout(() => {
     setCoordsPosition(style, targetCoords);
   }, 1);
@@ -63,23 +57,15 @@ export function animateFromTo(
       element.remove();
     }, actionTimeDefault * 1000);
   }
-
-  boardContainer?.appendChild(element);
 }
 
 export function animateExplosionAt(cellIndex: number) {
-  const boardContainer = document.querySelector(".app-container");
-  const expElement = document.createElement("div");
-  const coords = flatIndexToCoords(cellIndex, gameBoardCellsX);
-
-  expElement.className = `stretch-bg pixelate ${dynObjTag}`;
-
+  const expElement = createDynamicObjectAt(
+    cellIndex,
+    environment.explosionBlue1
+  );
   const style = expElement.style;
-  style.backgroundImage = `url("${environment.explosionBlue1}")`;
-  style.position = "absolute";
   style.zIndex = "20";
-  setStandardSize(style);
-  setCoordsPosition(style, coords);
   const delay = 70;
   animateImageSequence(
     style,
@@ -94,8 +80,6 @@ export function animateExplosionAt(cellIndex: number) {
   setTimeout(() => {
     expElement.remove();
   }, delay * 4);
-
-  boardContainer?.appendChild(expElement);
 }
 
 export function deleteElementWithSelectorAt(

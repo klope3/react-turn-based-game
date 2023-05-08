@@ -6,7 +6,12 @@ import {
 } from "../constants";
 import { characterData, getEnemyData } from "../data/characters";
 import { Cell, CharacterState } from "../types/gameStateTypes";
-import { getNewId, getRandomInt, getTaxicabDistance } from "../utility";
+import {
+  getNewId,
+  getNumberArray,
+  getRandomInt,
+  getTaxicabDistance,
+} from "../utility";
 import { mulberry32 } from "./random";
 
 export function generateCharacters(
@@ -24,7 +29,7 @@ export function generateCharacters(
     timer: 0,
   };
   cells[player.curCellIndex].characterHere = player;
-  const allIndices = Array.from({ length: cells.length }, (_, i) => i);
+  const allIndices = getNumberArray(0, cells.length);
   const validIndices = allIndices.filter((i) => {
     const objHere = cells[i].cellObject;
     const { distance: distToPlayer } = getTaxicabDistance(

@@ -50,6 +50,9 @@ export type Cell = {
 export type CellObject = {
   type: CellObjectType;
   imagePath: string;
+  recreateOnLoad: boolean;
+  displayedByCell: boolean;
+  selector: string;
 };
 
 export type CellObjectType = "rock" | "bomb";

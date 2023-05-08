@@ -52,14 +52,10 @@ export function explosionMutator(
   for (const index of neighborIndices) {
     const charHere = newCharacters.find((char) => char.curCellIndex === index);
     if (!charHere) {
-      console.log("no character at " + index);
       continue;
     }
 
     charHere.health--;
-    console.log(
-      "health of " + charHere.enemyData.type + " is now " + charHere.health
-    );
     const charIndex = newCharacters.indexOf(charHere);
     if (charHere.health <= 0) {
       newCharacters.splice(charIndex, 1);

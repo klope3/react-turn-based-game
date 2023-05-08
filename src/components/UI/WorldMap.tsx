@@ -13,7 +13,7 @@ import {
 } from "../../constants";
 import { WorldMapCell } from "./WorldMapCell";
 import { GameState } from "../../types/gameStateTypes";
-import { areCellsAdjacent } from "../../utility";
+import { areCellsAdjacent, getNumberArray } from "../../utility";
 
 export function WorldMap() {
   const style = {
@@ -28,10 +28,7 @@ export function WorldMap() {
   const curPlayerIndex = useSelector(
     (state: GameState) => state.playerCurrentWorldIndex
   );
-  const allIndices = Array.from(
-    { length: worldMapCellsX * worldMapCellsY },
-    (_, i) => i
-  );
+  const allIndices = getNumberArray(0, worldMapCellsX * worldMapCellsY);
   const visitedIndices = useSelector(
     (state: GameState) => state.visitedWorldMapIndices
   );

@@ -24,6 +24,7 @@ import {
   UPDATE_CELL_OBJECTS,
 } from "../types/actionTypes";
 import { CharacterState, GameState } from "../types/gameStateTypes";
+import { getNumberArray } from "../utility";
 import { cloneCells, cloneCharacters } from "./cloners";
 import { explosionMutator, singleEnemyMoveMutator } from "./gameMutators";
 import { getInitialState } from "./initialState";
@@ -86,7 +87,6 @@ function loadWorldRegionReducer(
   state: GameState,
   action: BasicAction
 ): GameState {
-  console.log("loading region " + action.value);
   const regionIndex = action.value;
   const newCells = generateCells(state.seed, regionIndex);
   const newCharacters = generateCharacters(newCells, state.seed, regionIndex);
@@ -206,10 +206,7 @@ function updateCellObjectsReducer(state: GameState): GameState {
   const newCharacters = cloneCharacters(state);
   const newCells = cloneCells(state, newCharacters);
 
-  const allIndices = Array.from(
-    { length: gameBoardCellsX * gameBoardCellsY },
-    (_, i) => i
-  );
+  const allIndices = getNumberArray(0, gameBoardCellsX * gameBoardCellsY);
   const explosionIndices = allIndices.filter((index) => {
     const objHere = newCells[index].cellObject;
     return objHere !== undefined && objHere.type === "bomb";

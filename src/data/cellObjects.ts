@@ -5,10 +5,16 @@ export const cellObjects: CellObject[] = [
   {
     type: "rock",
     imagePath: environment.objRock1,
+    recreateOnLoad: false,
+    selector: "",
+    displayedByCell: true,
   },
   {
     type: "bomb",
-    imagePath: "",
+    imagePath: environment.bomb,
+    recreateOnLoad: true,
+    selector: "bomb",
+    displayedByCell: false,
   },
 ];
 

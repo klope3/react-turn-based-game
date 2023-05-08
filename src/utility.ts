@@ -89,3 +89,7 @@ export function areCellsAdjacent(
 export function getRandomInt(seed: number) {
   return Math.floor(Number.MAX_SAFE_INTEGER * mulberry32(seed));
 }
+
+export function getNumberArray(firstNum: number, length: number) {
+  return Array.from({ length }, (_, i) => i + firstNum);
+}
