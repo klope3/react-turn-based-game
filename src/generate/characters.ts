@@ -1,67 +1,132 @@
 import {
   gameBoardCellsX,
+  maxEnemyCount,
   minEnemyCount,
   minSpawnDistanceFromPlayer,
   playerHealthStart,
+  worldMapCellsX,
+  worldMapCellsY,
 } from "../constants";
 import { characterData, getEnemyData } from "../data/characters";
-import { Cell, CharacterState } from "../types/gameStateTypes";
-import { getNewId, getRandomInt, getTaxicabDistance } from "../utility";
+import { getImportantWorldRegionIndices } from "../gridLogic/helpers";
+import { Cell, CharacterState, EnemyType } from "../types/gameStateTypes";
+import {
+  getNewId,
+  getNumberArray,
+  getRandomInt,
+  getTaxicabDistance,
+} from "../utility";
 import { mulberry32 } from "./random";
 
-export function generateCharacters(cells: Cell[], seed: number) {
+export function generateCharacters(
+  cells: Cell[],
+  seed: number,
+  regionIndex: number
+) {
+  const player = createPlayer(cells, seed, regionIndex);
+  const validIndices = getValidCharacterCellIndices(cells, player.curCellIndex);
+  const enemyTypes = chooseEnemyTypes(seed, regionIndex);
+  const enemies = createEnemies(
+    cells,
+    seed,
+    regionIndex,
+    validIndices,
+    enemyTypes
+  );
+
+  return [player, ...enemies];
+}
+
+function createPlayer(cells: Cell[], seed: number, regionIndex: number) {
+  const regionShift = getRandomInt(seed + regionIndex);
   const player: CharacterState = {
     enemyData: getEnemyData("none"),
-    curCellIndex: Math.floor(mulberry32(seed) * cells.length),
+    curCellIndex: Math.floor(mulberry32(regionShift) * cells.length),
     health: playerHealthStart,
     healthCapacity: playerHealthStart,
     id: getNewId(),
     timer: 0,
   };
-  const allIndices = Array.from({ length: cells.length }, (_, i) => i);
+  cells[player.curCellIndex].characterHere = player;
+
+  return player;
+}
+
+function getValidCharacterCellIndices(cells: Cell[], playerCellIndex: number) {
+  const allIndices = getNumberArray(0, cells.length);
   const validIndices = allIndices.filter((i) => {
     const objHere = cells[i].cellObject;
     const { distance: distToPlayer } = getTaxicabDistance(
       i,
-      player.curCellIndex,
+      playerCellIndex,
       gameBoardCellsX
     );
     const isObstructed =
-      player.curCellIndex === i ||
+      playerCellIndex === i ||
       (objHere !== undefined && objHere.type === "rock");
     const tooClose = distToPlayer < minSpawnDistanceFromPlayer;
 
     return !isObstructed && !tooClose;
   });
 
-  const characters = [player];
-  for (let i = 0; i < minEnemyCount && validIndices.length > 0; i++) {
-    const randIndex = Math.floor(
-      mulberry32(i + getRandomInt(seed)) * validIndices.length
-    );
-    const randType = chooseRandomCharacterType(seed, i + getRandomInt(seed));
-    const newCharacter: CharacterState = {
-      curCellIndex: validIndices[randIndex],
-      health: 1,
-      healthCapacity: 1,
-      enemyData: getEnemyData(randType),
-      id: getNewId(),
-      timer: 0,
-    };
-    characters.push(newCharacter);
-    cells[validIndices[randIndex]].characterHere = newCharacter;
-    validIndices.splice(randIndex, 1);
-  }
-
-  return characters;
+  return validIndices;
 }
 
-function chooseRandomCharacterType(seed: number, randShift: number) {
+function chooseEnemyTypes(seed: number, regionIndex: number): EnemyType[] {
   const typesToChooseFrom = characterData
     .filter((data) => data.type !== "none")
     .map((data) => data.type);
-  const randIndex = Math.floor(
-    mulberry32(seed + randShift) * typesToChooseFrom.length
-  );
-  return typesToChooseFrom[randIndex];
+  const enemyCountRowDelta = (maxEnemyCount - minEnemyCount) / worldMapCellsY;
+  const worldRows = getImportantWorldRegionIndices(
+    worldMapCellsX,
+    worldMapCellsY
+  ).rows.reverse();
+  const rowWithRegionIndex = worldRows.find((row) => row.includes(regionIndex));
+  if (!rowWithRegionIndex) {
+    console.error("Invalid region index");
+    return [];
+  }
+  const difficulty = worldRows.indexOf(rowWithRegionIndex);
+  const isFinalLevel = difficulty === worldRows.length - 1;
+  const enemyCount = isFinalLevel
+    ? maxEnemyCount
+    : minEnemyCount + enemyCountRowDelta * difficulty;
+  const countPerEnemy = Math.round(enemyCount / typesToChooseFrom.length);
+  const types = typesToChooseFrom
+    .map((type) => Array.from({ length: countPerEnemy }, () => type))
+    .flat();
+  while (types.length > maxEnemyCount) {
+    types.pop();
+  }
+
+  return types;
+}
+
+function createEnemies(
+  cells: Cell[],
+  seed: number,
+  regionIndex: number,
+  validIndices: number[],
+  types: EnemyType[]
+) {
+  const regionShift = getRandomInt(seed + regionIndex);
+  const enemies = types.map((type, i) => {
+    const randIndex = Math.floor(
+      mulberry32(i + regionShift) * validIndices.length
+    );
+    const cellIndex = validIndices[randIndex];
+    const newEnemy: CharacterState = {
+      curCellIndex: cellIndex,
+      health: 1,
+      healthCapacity: 1,
+      enemyData: getEnemyData(type),
+      id: getNewId(),
+      timer: 0,
+    };
+    cells[cellIndex].characterHere = newEnemy;
+    validIndices.splice(randIndex, 1);
+    return newEnemy;
+  });
+
+  return enemies;
 }

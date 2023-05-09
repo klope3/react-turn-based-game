@@ -10,7 +10,12 @@ import {
 } from "../gridLogic/helpers";
 import { minBy } from "../minMax";
 import { standardAttackPlayerMutator } from "../redux/gameMutators";
-import { Cell, EnemyData, EnemyType } from "../types/gameStateTypes";
+import {
+  Cell,
+  CellObject,
+  EnemyData,
+  EnemyType,
+} from "../types/gameStateTypes";
 import {
   areCellsAdjacent,
   flatIndexToCoords,
@@ -154,12 +159,12 @@ export const characterData: EnemyData[] = [
         deltaY <= this.attackRange;
       if (!closeEnough) return false;
 
-      mutableCells[closestOpenPlayerNeighbor].cellObject =
-        getCellObjectData("bomb");
+      const bombData = getCellObjectData("bomb") as CellObject;
+      mutableCells[closestOpenPlayerNeighbor].cellObject = bombData;
       animateFromTo(
         mutableSelfState.curCellIndex,
         closestOpenPlayerNeighbor,
-        environment.bomb,
+        bombData.imagePath,
         "bomb"
       );
       const coords = flatIndexToCoords(

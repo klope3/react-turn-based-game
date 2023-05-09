@@ -7,19 +7,21 @@ type CellProps = {
   cellData: CellType;
 };
 
-export function Cell({ flatIndex, isSelected, cellData }: CellProps) {
+export function Cell({
+  flatIndex,
+  isSelected,
+  cellData: { cellObject },
+}: CellProps) {
   const cellClassName = `cell stretch-bg pixelate`;
   const cellStyle = {
     backgroundImage: `url("${environment.groundRock1}")`,
   };
 
   const objClassName = `stretch-bg fill-container pixelate ${
-    cellData.cellObject !== undefined ? cellData.cellObject.type : ""
+    cellObject !== undefined ? cellObject.type : ""
   }`;
   const objStyle = {
-    backgroundImage: cellData.cellObject
-      ? `url("${cellData.cellObject.imagePath}")`
-      : undefined,
+    backgroundImage: cellObject ? `url("${cellObject.imagePath}")` : undefined,
   };
 
   return (
@@ -28,7 +30,7 @@ export function Cell({ flatIndex, isSelected, cellData }: CellProps) {
       {isSelected && (
         <div className="select-frame fill-container no-click"></div>
       )}
-      {cellData.cellObject && (
+      {cellObject && cellObject.displayedByCell && (
         <div
           className={objClassName}
           style={objStyle}

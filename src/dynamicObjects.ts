@@ -10,6 +10,32 @@ import { flatIndexToCoords } from "./utility";
 //TODO: Currently the use of background-image causes some delay in image loading. Consider use of sprite sheets in future.
 
 const squareSize = displayWidth / gameBoardCellsX;
+const dynObjTag = "dynamic-object";
+
+export function createDynamicObjectAt(
+  cellIndex: number,
+  imagePath: string,
+  selector: string = ""
+) {
+  const boardContainer = document.querySelector(".app-container");
+  if (!boardContainer) return undefined;
+
+  const element = document.createElement("div");
+  const coords = flatIndexToCoords(cellIndex, gameBoardCellsX);
+
+  element.className = `stretch-bg pixelate ${selector} ${dynObjTag}`;
+  element.dataset.coords = `${coords.x}, ${coords.y}`;
+
+  const style = element.style;
+  style.backgroundImage = `url("${imagePath}")`;
+  setStandardSize(style);
+  style.position = "absolute";
+  setCoordsPosition(style, coords);
+
+  boardContainer?.appendChild(element);
+
+  return element;
+}
 
 export function animateFromTo(
   cellIndexOrigin: number,
@@ -18,20 +44,15 @@ export function animateFromTo(
   selector: string = "",
   deleteAtEnd: boolean = false
 ) {
-  const boardContainer = document.querySelector(".board-container");
-  const element = document.createElement("div");
-  const originCoords = flatIndexToCoords(cellIndexOrigin, gameBoardCellsX);
-  const targetCoords = flatIndexToCoords(cellIndexTarget, gameBoardCellsX);
-
-  element.className = `stretch-bg pixelate ${selector}`;
-  element.dataset.coords = `${targetCoords.x}, ${targetCoords.y}`;
+  const element = createDynamicObjectAt(cellIndexTarget, imagePath, selector);
+  if (!element) return;
 
   const style = element.style;
-  style.backgroundImage = `url("${imagePath}")`;
-  setStandardSize(style);
-  style.position = "absolute";
-  setCoordsPosition(style, originCoords);
   style.transition = `${actionTimeDefault}s`;
+  const originCoords = flatIndexToCoords(cellIndexOrigin, gameBoardCellsX);
+  const targetCoords = flatIndexToCoords(cellIndexTarget, gameBoardCellsX);
+  setCoordsPosition(style, originCoords);
+
   setTimeout(() => {
     setCoordsPosition(style, targetCoords);
   }, 1);
@@ -40,23 +61,17 @@ export function animateFromTo(
       element.remove();
     }, actionTimeDefault * 1000);
   }
-
-  boardContainer?.appendChild(element);
 }
 
 export function animateExplosionAt(cellIndex: number) {
-  const boardContainer = document.querySelector(".board-container");
-  const expElement = document.createElement("div");
-  const coords = flatIndexToCoords(cellIndex, gameBoardCellsX);
-
-  expElement.className = "stretch-bg pixelate";
+  const expElement = createDynamicObjectAt(
+    cellIndex,
+    environment.explosionBlue1
+  );
+  if (!expElement) return;
 
   const style = expElement.style;
-  style.backgroundImage = `url("${environment.explosionBlue1}")`;
-  style.position = "absolute";
   style.zIndex = "20";
-  setStandardSize(style);
-  setCoordsPosition(style, coords);
   const delay = 70;
   animateImageSequence(
     style,
@@ -71,8 +86,6 @@ export function animateExplosionAt(cellIndex: number) {
   setTimeout(() => {
     expElement.remove();
   }, delay * 4);
-
-  boardContainer?.appendChild(expElement);
 }
 
 export function deleteElementWithSelectorAt(
@@ -124,4 +137,11 @@ function animateImageSequence(
     style.backgroundImage = `url("${path}")`;
   });
   doFunctionSequence(functions, timePerImage);
+}
+
+export function deleteAllDynamicObjects() {
+  const objects = document.querySelectorAll(`.${dynObjTag}`);
+  for (let i = 0; i < objects.length; i++) {
+    objects[i].remove();
+  }
 }

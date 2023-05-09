@@ -9,6 +9,8 @@ import { GameState } from "../../types/gameStateTypes";
 import { usePlayer } from "../../utility";
 import { Cell } from "./Cell";
 import "./Grid.css";
+import { saveGame } from "../../data/saveLoad";
+import { CLICK_CELL, MOVE_PLAYER } from "../../types/actionTypes";
 
 export function Grid() {
   const style = {
@@ -36,6 +38,15 @@ export function Grid() {
         }, delay);
       }
     }
+    const playerTookTurn = !!actions.find(
+      (action) => action.type === MOVE_PLAYER
+    );
+    if (!playerTookTurn) return;
+    //only save the game when the player has actually taken a turn
+    const totalActionTime = actionTimeDefault * actions.length * 1000;
+    setTimeout(() => {
+      saveGame();
+    }, totalActionTime);
   }
 
   return (

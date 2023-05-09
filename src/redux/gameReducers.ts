@@ -1,14 +1,30 @@
-import { gameBoardCellsX, gameBoardCellsY } from "../constants";
-import { getEnemyWalkableGrid } from "../gridLogic/helpers";
+import {
+  gameBoardCellsX,
+  gameBoardCellsY,
+  worldMapCellsX,
+  worldMapCellsY,
+} from "../constants";
+import { loadStateFromSave } from "../data/saveLoad";
+import { generateCharacters } from "../generate/characters";
+import { generateCells } from "../generate/environment";
+import {
+  getEnemyWalkableGrid,
+  getImportantWorldRegionIndices,
+} from "../gridLogic/helpers";
 import {
   BasicAction,
   CLICK_CELL,
+  CLICK_WORLD_CELL,
   ENEMY_TURN,
+  LOAD_SAVE_GAME,
+  LOAD_WORLD_REGION,
   MOVE_PLAYER,
   TOGGLE_INPUT,
+  TOGGLE_WORLD_MAP,
   UPDATE_CELL_OBJECTS,
 } from "../types/actionTypes";
-import { GameState } from "../types/gameStateTypes";
+import { CharacterState, GameState } from "../types/gameStateTypes";
+import { getNumberArray } from "../utility";
 import { cloneCells, cloneCharacters } from "./cloners";
 import { explosionMutator, singleEnemyMoveMutator } from "./gameMutators";
 import { getInitialState } from "./initialState";
@@ -33,6 +49,17 @@ export function gameReducer(
       };
     case UPDATE_CELL_OBJECTS:
       return updateCellObjectsReducer(state);
+    case TOGGLE_WORLD_MAP:
+      return {
+        ...state,
+        showWorldMap: !state.showWorldMap,
+      };
+    case CLICK_WORLD_CELL:
+      return clickWorldCellReducer(state, action);
+    case LOAD_WORLD_REGION:
+      return loadWorldRegionReducer(state, action);
+    case LOAD_SAVE_GAME:
+      return loadSaveGameReducer(state);
     default:
       return state;
   }
@@ -46,6 +73,56 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
   };
 }
 
+function loadSaveGameReducer(state: GameState): GameState {
+  const loadedState = loadStateFromSave();
+  if (!loadedState) {
+    console.log("Couldn't find any valid save data");
+    return state;
+  }
+
+  return loadedState;
+}
+
+function loadWorldRegionReducer(
+  state: GameState,
+  action: BasicAction
+): GameState {
+  const regionIndex = action.value;
+  const newCells = generateCells(state.seed, regionIndex);
+  const newCharacters = generateCharacters(newCells, state.seed, regionIndex);
+  const prevPlayer = state.activeCharacters.find(
+    (char) => char.enemyData.type === "none"
+  ) as CharacterState;
+  const clonedPlayer = { ...prevPlayer };
+  const playerToReplace = newCharacters.find(
+    (char) => char.enemyData.type === "none"
+  ) as CharacterState;
+  clonedPlayer.curCellIndex = playerToReplace.curCellIndex;
+  const playerToReplaceIndex = newCharacters.indexOf(playerToReplace);
+  newCharacters[playerToReplaceIndex] = clonedPlayer;
+  const newVisited = [...state.visitedWorldMapIndices, regionIndex];
+
+  return {
+    ...state,
+    showWorldMap: false,
+    activeCharacters: newCharacters,
+    cells: newCells,
+    playerCurrentWorldIndex: regionIndex,
+    visitedWorldMapIndices: newVisited,
+  };
+}
+
+function clickWorldCellReducer(
+  state: GameState,
+  action: BasicAction
+): GameState {
+  const clickedIndex = action.value;
+  return {
+    ...state,
+    selectedWorldMapIndex: clickedIndex,
+  };
+}
+
 function playerTurnReducer(state: GameState, action: BasicAction): GameState {
   const newCharacters = cloneCharacters(state);
   const newPlayer = newCharacters.find(
@@ -56,12 +133,19 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
   const playerPrevCellIndex = newPlayer.curCellIndex;
   const playerTargetCellIndex = action.value;
 
-  const newCells = cloneCells(state);
+  const newCells = cloneCells(state, newCharacters);
   const characterOccupyingTarget = newCharacters.find(
     (char) => char.curCellIndex === playerTargetCellIndex
   );
   if (characterOccupyingTarget) {
     newCharacters.splice(newCharacters.indexOf(characterOccupyingTarget), 1);
+  }
+  const isFinalRegion =
+    state.playerCurrentWorldIndex ===
+    getImportantWorldRegionIndices(worldMapCellsX, worldMapCellsY).finalRegion;
+  const finalVictory = newCharacters.length === 1 && isFinalRegion;
+  if (finalVictory) {
+    console.log("You beat the final level!");
   }
 
   newPlayer.curCellIndex = playerTargetCellIndex;
@@ -83,7 +167,7 @@ function enemyTurnReducer(state: GameState): GameState {
   );
   if (!newPlayer) return state;
 
-  const newCells = cloneCells(state);
+  const newCells = cloneCells(state, newCharacters);
   const walkableGrid = getEnemyWalkableGrid(state.cells);
 
   for (let i = 0; i < newCharacters.length; i++) {
@@ -119,13 +203,10 @@ function enemyTurnReducer(state: GameState): GameState {
 }
 
 function updateCellObjectsReducer(state: GameState): GameState {
-  const newCells = cloneCells(state);
   const newCharacters = cloneCharacters(state);
+  const newCells = cloneCells(state, newCharacters);
 
-  const allIndices = Array.from(
-    { length: gameBoardCellsX * gameBoardCellsY },
-    (_, i) => i
-  );
+  const allIndices = getNumberArray(0, gameBoardCellsX * gameBoardCellsY);
   const explosionIndices = allIndices.filter((index) => {
     const objHere = newCells[index].cellObject;
     return objHere !== undefined && objHere.type === "bomb";

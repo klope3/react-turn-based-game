@@ -9,6 +9,14 @@ export function getNewId() {
   return idCounter;
 }
 
+export function setIdCounter(num: number) {
+  idCounter = num;
+}
+
+export function getIdCounter() {
+  return idCounter;
+}
+
 export function cellIndexToPxOffset(cellIndex: number) {
   const coordinates = flatIndexToCoords(cellIndex, gameBoardCellsX);
   const cellSize = displayWidth / gameBoardCellsX;
@@ -80,4 +88,23 @@ export function areCellsAdjacent(
 
 export function getRandomInt(seed: number) {
   return Math.floor(Number.MAX_SAFE_INTEGER * mulberry32(seed));
+}
+
+export function getNumberArray(firstNum: number, length: number) {
+  return Array.from({ length }, (_, i) => i + firstNum);
+}
+
+export function doIntervalWhile(
+  fn: () => void,
+  delay: number,
+  shouldContinueCb: () => boolean
+) {
+  const interval = setInterval(() => {
+    if (!shouldContinueCb()) {
+      clearInterval(interval);
+      return;
+    } else {
+      fn();
+    }
+  }, delay);
 }
