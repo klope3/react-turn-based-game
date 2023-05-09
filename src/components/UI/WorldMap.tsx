@@ -14,6 +14,7 @@ import {
 import { WorldMapCell } from "./WorldMapCell";
 import { GameState } from "../../types/gameStateTypes";
 import { areCellsAdjacent, getNumberArray } from "../../utility";
+import { saveGame } from "../../data/saveLoad";
 
 export function WorldMap() {
   const style = {
@@ -55,6 +56,7 @@ export function WorldMap() {
       canBeVisitedIndices.includes(+clickedIndex)
     ) {
       dispatch(loadWorldRegionIndex(+clickedIndex));
+      saveGame();
     } else {
       dispatch(clickWorldCell(+clickedIndex));
     }
