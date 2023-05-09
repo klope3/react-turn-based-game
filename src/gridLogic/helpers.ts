@@ -180,8 +180,15 @@ export function getImportantWorldRegionIndices(
     x: startingRegionCoords.x,
     y: 0,
   };
+  const rows = Array.from({ length: worldCellsY }, (_, rowIndex) =>
+    Array.from(
+      { length: worldCellsX },
+      (_, columnIndex) => rowIndex * worldCellsX + columnIndex
+    )
+  );
   return {
     startingRegion: coordsToFlatIndex(startingRegionCoords, worldCellsX),
     finalRegion: coordsToFlatIndex(finalRegionCoords, worldCellsX),
+    rows,
   };
 }
