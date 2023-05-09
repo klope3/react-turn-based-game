@@ -6,8 +6,7 @@ import { useDispatch, useSelector } from "react-redux/es/exports";
 import { GameState } from "./types/gameStateTypes";
 import { HealthDisplay } from "./components/UI/HealthDisplay";
 import { WorldMap } from "./components/UI/WorldMap";
-import { loadSaveGame, toggleWorldMap } from "./redux/gameActions";
-import { saveGame } from "./data/saveLoad";
+import { toggleWorldMap } from "./redux/gameActions";
 
 function App() {
   const style = {
@@ -40,20 +39,6 @@ function App() {
           World Map
         </button>
         {showWorldMap && <WorldMap />}
-        <button
-          onClick={() => {
-            saveGame();
-          }}
-        >
-          Save
-        </button>
-        <button
-          onClick={() => {
-            dispatch(loadSaveGame());
-          }}
-        >
-          Load
-        </button>
       </div>
     </>
   );
