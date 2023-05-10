@@ -4,8 +4,8 @@ import { Grid } from "./components/Grid/Grid";
 import { displayWidth } from "./constants";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import { GameState } from "./types/gameStateTypes";
-import { HealthDisplay } from "./components/UI/HealthDisplay";
-import { WorldMap } from "./components/UI/WorldMap";
+import { HealthDisplay } from "./components/UI/HealthDisplay/HealthDisplay";
+import { WorldMap } from "./components/UI/WorldMap/WorldMap";
 import { toggleWorldMap } from "./redux/gameActions";
 
 function App() {
