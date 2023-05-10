@@ -17,28 +17,24 @@ export function getInitialState(): GameState {
 }
 
 export function getNewGameState(): GameState {
-  const seed = 0;
+  const initialState = getDefaultState();
   const playerWorldStartIndex = getImportantWorldRegionIndices(
     worldMapCellsX,
     worldMapCellsY
   ).startingRegion;
-  const initialCells = generateCells(seed, playerWorldStartIndex);
+  const initialCells = generateCells(initialState.seed, playerWorldStartIndex);
   const initialCharacters = generateCharacters(
     initialCells,
-    seed,
+    initialState.seed,
     playerWorldStartIndex
   );
-  const initialState: GameState = {
+  return {
+    ...initialState,
     activeCharacters: initialCharacters,
-    selectedCellIndex: undefined,
-    userInput: true,
     cells: initialCells,
-    showWorldMap: false,
-    visitedWorldMapIndices: [playerWorldStartIndex],
-    selectedWorldMapIndex: undefined,
-    playerCurrentWorldIndex: playerWorldStartIndex,
-    seed,
     gameMode: "play",
+    visitedWorldMapIndices: [playerWorldStartIndex],
+    playerCurrentWorldIndex: playerWorldStartIndex,
   };
   return initialState;
 }
@@ -55,6 +51,7 @@ export function getDefaultState(): GameState {
     playerCurrentWorldIndex: 0,
     seed: 0,
     gameMode: "mainMenu",
+    gameEndStatus: "neither",
   };
   return state;
 }

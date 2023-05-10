@@ -18,7 +18,6 @@ import {
   ENEMY_TURN,
   LOAD_WORLD_REGION,
   MOVE_PLAYER,
-  SET_GAME_OVER,
   SET_MAIN_MENU,
   START_PLAYING,
   TOGGLE_GAME_MENU,
@@ -70,11 +69,7 @@ export function gameReducer(
       return {
         ...state,
         gameMode: "mainMenu",
-      };
-    case SET_GAME_OVER:
-      return {
-        ...state,
-        gameMode: "gameOver",
+        gameEndStatus: "neither",
       };
     case START_PLAYING:
       return startPlayingReducer();
@@ -161,7 +156,7 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
     getImportantWorldRegionIndices(worldMapCellsX, worldMapCellsY).finalRegion;
   const finalVictory = newCharacters.length === 1 && isFinalRegion;
   if (finalVictory) {
-    console.log("You beat the final level!");
+    localStorage.removeItem("save");
   }
 
   newPlayer.curCellIndex = playerTargetCellIndex;
@@ -173,6 +168,7 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
     activeCharacters: newCharacters,
     userInput: false,
     cells: newCells,
+    gameEndStatus: finalVictory ? "won" : state.gameEndStatus,
   };
 }
 
@@ -207,14 +203,17 @@ function enemyTurnReducer(state: GameState): GameState {
     }
   }
 
-  if (newPlayer.health <= 0) {
+  const defeat = newPlayer.health <= 0;
+  if (defeat) {
     newCharacters.splice(newCharacters.indexOf(newPlayer), 1);
+    localStorage.removeItem("save");
   }
 
   return {
     ...state,
     activeCharacters: newCharacters,
     cells: newCells,
+    gameEndStatus: defeat ? "lost" : state.gameEndStatus,
   };
 }
 

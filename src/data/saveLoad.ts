@@ -4,6 +4,7 @@ import {
 } from "../dynamicObjects";
 import { generateCells } from "../generate/environment";
 import { store } from "../redux/gameStore";
+import { getDefaultState } from "../redux/initialState";
 import {
   Cell,
   CharacterState,
@@ -59,14 +60,11 @@ export function rebuildStateFromSave(saveString: string): GameState {
   const rebuiltCells = rebuildCells(saveData, rebuiltCharacters);
 
   const rebuiltState: GameState = {
+    ...getDefaultState(),
     seed,
     playerCurrentWorldIndex,
     activeCharacters: rebuiltCharacters,
     cells: rebuiltCells,
-    userInput: true,
-    selectedCellIndex: undefined,
-    selectedWorldMapIndex: undefined,
-    showWorldMap: false,
     visitedWorldMapIndices,
     gameMode: "play",
   };
