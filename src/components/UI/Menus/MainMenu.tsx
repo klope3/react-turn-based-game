@@ -18,6 +18,8 @@ export function MainMenu() {
             onClick={() => {
               if (saveExists) {
                 setConfirmDeleteSave(true);
+              } else {
+                dispatch(startPlaying());
               }
             }}
           >
