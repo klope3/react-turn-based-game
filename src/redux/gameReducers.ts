@@ -4,7 +4,7 @@ import {
   worldMapCellsX,
   worldMapCellsY,
 } from "../constants";
-import { loadStateFromSave } from "../data/saveLoad";
+import { rebuildStateFromSave } from "../data/saveLoad";
 import { generateCharacters } from "../generate/characters";
 import { generateCells } from "../generate/environment";
 import {
@@ -16,11 +16,11 @@ import {
   CLICK_CELL,
   CLICK_WORLD_CELL,
   ENEMY_TURN,
-  LOAD_SAVE_GAME,
   LOAD_WORLD_REGION,
   MOVE_PLAYER,
   SET_GAME_OVER,
   SET_MAIN_MENU,
+  START_PLAYING,
   TOGGLE_GAME_MENU,
   TOGGLE_INPUT,
   TOGGLE_WORLD_MAP,
@@ -30,7 +30,7 @@ import { CharacterState, GameState } from "../types/gameStateTypes";
 import { getNumberArray } from "../utility";
 import { cloneCells, cloneCharacters } from "./cloners";
 import { explosionMutator, singleEnemyMoveMutator } from "./gameMutators";
-import { getInitialState } from "./initialState";
+import { getInitialState, getNewGameState } from "./initialState";
 
 const initialState = getInitialState();
 
@@ -61,8 +61,6 @@ export function gameReducer(
       return clickWorldCellReducer(state, action);
     case LOAD_WORLD_REGION:
       return loadWorldRegionReducer(state, action);
-    case LOAD_SAVE_GAME:
-      return loadSaveGameReducer(state);
     case TOGGLE_GAME_MENU:
       return {
         ...state,
@@ -78,9 +76,19 @@ export function gameReducer(
         ...state,
         gameMode: "gameOver",
       };
+    case START_PLAYING:
+      return startPlayingReducer();
     default:
       return state;
   }
+}
+
+function startPlayingReducer(): GameState {
+  const savedString = localStorage.getItem("save");
+  if (!savedString) {
+    return getNewGameState();
+  }
+  return rebuildStateFromSave(savedString);
 }
 
 function clickCellReducer(state: GameState, action: BasicAction): GameState {
@@ -89,16 +97,6 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
     ...state,
     selectedCellIndex: clickedIndex,
   };
-}
-
-function loadSaveGameReducer(state: GameState): GameState {
-  const loadedState = loadStateFromSave();
-  if (!loadedState) {
-    console.log("Couldn't find any valid save data");
-    return state;
-  }
-
-  return loadedState;
 }
 
 function loadWorldRegionReducer(

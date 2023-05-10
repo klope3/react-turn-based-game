@@ -44,11 +44,8 @@ export function saveGame() {
   }
 }
 
-export function loadStateFromSave(): GameState | undefined {
-  const saveStr = localStorage.getItem("save");
-  if (!saveStr) return undefined;
-
-  const saveData = JSON.parse(saveStr) as SaveData;
+export function rebuildStateFromSave(saveString: string): GameState {
+  const saveData = JSON.parse(saveString) as SaveData;
   const {
     seed,
     playerCurrentWorldIndex,
