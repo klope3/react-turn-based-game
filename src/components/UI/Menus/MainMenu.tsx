@@ -7,7 +7,9 @@ export function MainMenu() {
 
   return (
     <div className="menu">
-      {saveExists && <button onClick={() => startPlaying()}>Continue</button>}
+      {saveExists && (
+        <button onClick={() => dispatch(startPlaying())}>Continue</button>
+      )}
       <button onClick={() => dispatch(startPlaying())}>New Game</button>
     </div>
   );

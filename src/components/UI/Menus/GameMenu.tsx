@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./Menus.css";
 import { GameState } from "../../../types/gameStateTypes";
-import { toggleGameMenu } from "../../../redux/gameActions";
+import { setMainMenu, toggleGameMenu } from "../../../redux/gameActions";
 
 export function GameMenu() {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export function GameMenu() {
       {expanded && (
         <div className="menu expanded-menu">
           <button onClick={() => dispatch(toggleGameMenu())}>Resume</button>
-          <button>Main Menu</button>
+          <button onClick={() => dispatch(setMainMenu())}>Main Menu</button>
         </div>
       )}
     </div>
