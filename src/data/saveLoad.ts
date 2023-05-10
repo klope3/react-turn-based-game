@@ -71,6 +71,7 @@ export function loadStateFromSave(): GameState | undefined {
     selectedWorldMapIndex: undefined,
     showWorldMap: false,
     visitedWorldMapIndices,
+    gameMode: "play",
   };
   setIdCounter(saveData.idCounter);
 

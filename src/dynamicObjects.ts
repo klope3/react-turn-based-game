@@ -17,7 +17,7 @@ export function createDynamicObjectAt(
   imagePath: string,
   selector: string = ""
 ) {
-  const boardContainer = document.querySelector(".app-container");
+  const boardContainer = document.querySelector(".board-container");
   if (!boardContainer) return undefined;
 
   const element = document.createElement("div");

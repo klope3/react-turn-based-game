@@ -8,6 +8,7 @@ export type GameState = {
   visitedWorldMapIndices: number[];
   selectedWorldMapIndex: number | undefined;
   playerCurrentWorldIndex: number;
+  gameMode: GameMode;
 };
 
 export type CharacterState = {
@@ -90,3 +91,5 @@ export type SavedCell = {
   savedCharacterId: number | undefined;
   cellIndex: number;
 };
+
+export type GameMode = "play" | "gameMenu" | "mainMenu" | "gameOver";

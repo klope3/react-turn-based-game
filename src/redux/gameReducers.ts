@@ -19,6 +19,9 @@ import {
   LOAD_SAVE_GAME,
   LOAD_WORLD_REGION,
   MOVE_PLAYER,
+  SET_GAME_OVER,
+  SET_MAIN_MENU,
+  TOGGLE_GAME_MENU,
   TOGGLE_INPUT,
   TOGGLE_WORLD_MAP,
   UPDATE_CELL_OBJECTS,
@@ -60,6 +63,21 @@ export function gameReducer(
       return loadWorldRegionReducer(state, action);
     case LOAD_SAVE_GAME:
       return loadSaveGameReducer(state);
+    case TOGGLE_GAME_MENU:
+      return {
+        ...state,
+        gameMode: state.gameMode === "gameMenu" ? "play" : "gameMenu",
+      };
+    case SET_MAIN_MENU:
+      return {
+        ...state,
+        gameMode: "mainMenu",
+      };
+    case SET_GAME_OVER:
+      return {
+        ...state,
+        gameMode: "gameOver",
+      };
     default:
       return state;
   }

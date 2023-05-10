@@ -10,7 +10,7 @@ import { usePlayer } from "../../utility";
 import { Cell } from "./Cell";
 import "./Grid.css";
 import { saveGame } from "../../data/saveLoad";
-import { CLICK_CELL, MOVE_PLAYER } from "../../types/actionTypes";
+import { MOVE_PLAYER } from "../../types/actionTypes";
 
 export function Grid() {
   const style = {
@@ -22,11 +22,13 @@ export function Grid() {
   const selectedCellIndex = useSelector(
     (state: GameState) => state.selectedCellIndex
   );
-  const userInput = useSelector((state: GameState) => state.userInput);
+  const allowGridInput = useSelector(
+    (state: GameState) => state.userInput && state.gameMode === "play"
+  );
   const player = usePlayer();
 
   function clickGrid(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (!userInput) return;
+    if (!allowGridInput) return;
 
     const actions = getClickGridActions(e, player, selectedCellIndex, cells);
     for (let i = 0; i < actions.length; i++) {

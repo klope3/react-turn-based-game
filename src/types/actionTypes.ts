@@ -15,3 +15,6 @@ export const TOGGLE_WORLD_MAP = "toggleWorldMap";
 export const CLICK_WORLD_CELL = "clickWorldCell";
 export const LOAD_WORLD_REGION = "loadWorldRegion";
 export const LOAD_SAVE_GAME = "loadSaveGame";
+export const TOGGLE_GAME_MENU = "toggleGameMenu";
+export const SET_MAIN_MENU = "setMainMenu";
+export const SET_GAME_OVER = "setGameOver";

@@ -31,6 +31,7 @@ export function getInitialState(): GameState {
     selectedWorldMapIndex: undefined,
     playerCurrentWorldIndex: playerWorldStartIndex,
     seed,
+    gameMode: "mainMenu",
   };
   return initialState;
 }

@@ -1,0 +1,22 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.menu button {
+  display: block;
+  padding: 15px;
+}
+
+.expanded-menu {
+  position: absolute;
+  top: 100%;
+  z-index: 100;
+  left: 0;
+  right: 0;
+}
+
+.menu-container {
+  position: relative;
+}

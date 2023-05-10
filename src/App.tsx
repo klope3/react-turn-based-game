@@ -1,44 +1,23 @@
+import { useSelector } from "react-redux/es/exports";
 import "./App.css";
-import { Character } from "./components/Character/Character";
-import { Grid } from "./components/Grid/Grid";
+import { Game } from "./Game";
 import { displayWidth } from "./constants";
-import { useDispatch, useSelector } from "react-redux/es/exports";
 import { GameState } from "./types/gameStateTypes";
-import { HealthDisplay } from "./components/UI/HealthDisplay/HealthDisplay";
-import { WorldMap } from "./components/UI/WorldMap/WorldMap";
-import { toggleWorldMap } from "./redux/gameActions";
+import { MainMenu } from "./components/UI/Menus/MainMenu";
 
 function App() {
   const style = {
     maxWidth: `${displayWidth}px`,
   };
-  const characters = useSelector((state: GameState) => state.activeCharacters);
-  const player = characters.find((char) => char.enemyData.type === "none");
-  const showWorldMap = useSelector((state: GameState) => state.showWorldMap);
-  const dispatch = useDispatch();
+  const gameMode = useSelector((state: GameState) => state.gameMode);
+  const showGame = gameMode === "play" || gameMode === "gameMenu";
+  const mainMenu = gameMode === "mainMenu";
 
   return (
     <>
       <div className="app-container" style={style}>
-        {characters.map((char) => (
-          <Character key={char.id} data={char} />
-        ))}
-        <Grid />
-        {player && (
-          <HealthDisplay
-            healthCapacity={player.healthCapacity}
-            healthCurrent={player.health}
-          />
-        )}
-        {!player && <div>GAME OVER</div>}
-        <button
-          onClick={() => {
-            dispatch(toggleWorldMap());
-          }}
-        >
-          World Map
-        </button>
-        {showWorldMap && <WorldMap />}
+        {showGame && <Game />}
+        {mainMenu && <MainMenu />}
       </div>
     </>
   );

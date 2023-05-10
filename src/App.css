@@ -4,6 +4,7 @@
 
 * {
   box-sizing: border-box;
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 body {
@@ -11,8 +12,11 @@ body {
 }
 
 .app-container {
-  position: relative;
   margin: auto;
+}
+
+.board-container {
+  position: relative;
 }
 
 .fill-container {
