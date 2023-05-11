@@ -44,6 +44,9 @@ export function WorldMap() {
         areCellsAdjacent(checkIndex, visitedIndex, worldMapCellsX)
       )
     );
+  const gameMenuOpen = useSelector(
+    (state: GameState) => state.gameMode === "gameMenu"
+  );
 
   function clickGrid(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const target = e.target as HTMLElement;
@@ -75,13 +78,7 @@ export function WorldMap() {
           />
         ))}
       </div>
-      <button
-        onClick={() => {
-          dispatch(toggleWorldMap());
-        }}
-      >
-        Close
-      </button>
+      {gameMenuOpen && <div className="input-blocker"></div>}
     </div>
   );
 }

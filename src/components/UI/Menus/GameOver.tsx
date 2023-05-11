@@ -6,8 +6,8 @@ export function GameOver() {
 
   return (
     <>
-      <div>Game Over</div>
       <div className="menu">
+        <div>Game Over</div>
         <button
           onClick={() => {
             dispatch(setMainMenu());

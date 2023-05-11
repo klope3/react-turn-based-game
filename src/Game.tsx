@@ -3,7 +3,11 @@ import { Character } from "./components/Character/Character";
 import { Grid } from "./components/Grid/Grid";
 import { HealthDisplay } from "./components/UI/HealthDisplay/HealthDisplay";
 import { GameMenu } from "./components/UI/Menus/GameMenu";
-import { toggleWorldMap } from "./redux/gameActions";
+import {
+  setMainMenu,
+  toggleGameMenu,
+  toggleWorldMap,
+} from "./redux/gameActions";
 import { WorldMap } from "./components/UI/WorldMap/WorldMap";
 import { GameState } from "./types/gameStateTypes";
 
@@ -12,30 +16,43 @@ export function Game() {
   const player = characters.find((char) => char.enemyData.type === "none");
   const showWorldMap = useSelector((state: GameState) => state.showWorldMap);
   const dispatch = useDispatch();
+  const gameMode = useSelector((state: GameState) => state.gameMode);
+  const menuExpanded = gameMode === "gameMenu";
+  const worldMapButtonText = showWorldMap ? "Back" : "World Map";
 
   return (
     <>
-      <GameMenu />
+      <div className="top-bar">
+        <button onClick={() => dispatch(toggleGameMenu())}>☰</button>
+      </div>
       <div className="board-container">
         {characters.map((char) => (
           <Character key={char.id} data={char} />
         ))}
         <Grid />
+        {menuExpanded && (
+          <>
+            <div className="input-blocker"></div>
+            <GameMenu />
+          </>
+        )}
+        {showWorldMap && <WorldMap />}
+      </div>
+      <div className="bottom-bar">
         {player && (
           <HealthDisplay
             healthCapacity={player.healthCapacity}
             healthCurrent={player.health}
           />
         )}
-        {!player && <div>GAME OVER</div>}
         <button
           onClick={() => {
             dispatch(toggleWorldMap());
           }}
         >
-          World Map
+          {worldMapButtonText}
         </button>
-        {showWorldMap && <WorldMap />}
+        {menuExpanded && <div className="input-blocker"></div>}
       </div>
     </>
   );

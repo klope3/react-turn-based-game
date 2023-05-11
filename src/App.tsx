@@ -6,11 +6,9 @@ import { GameState } from "./types/gameStateTypes";
 import { MainMenu } from "./components/UI/Menus/MainMenu";
 import { Victory } from "./components/UI/Menus/Victory";
 import { GameOver } from "./components/UI/Menus/GameOver";
+import { useEffect } from "react";
 
 function App() {
-  const style = {
-    maxWidth: `${displayWidth}px`,
-  };
   const gameMode = useSelector((state: GameState) => state.gameMode);
   const mainMenu = gameMode === "mainMenu";
   const gameEndStatus = useSelector((state: GameState) => state.gameEndStatus);
@@ -21,7 +19,7 @@ function App() {
 
   return (
     <>
-      <div className="app-container" style={style}>
+      <div className="app-container">
         {showGame && <Game />}
         {mainMenu && <MainMenu />}
         {gameEndStatus === "won" && <Victory />}

@@ -5,8 +5,8 @@ export function Victory() {
   const dispatch = useDispatch();
   return (
     <>
-      <div>Victory</div>
       <div className="menu">
+        <div>Victory</div>
         <button onClick={() => dispatch(setMainMenu())}>Main Menu</button>
       </div>
     </>
