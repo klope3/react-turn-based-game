@@ -1,5 +1,5 @@
-import { displayWidth, gameBoardCellsX } from "../../constants";
-import { ui } from "../../data/assetPaths";
+import { displayWidth, gameBoardCellsX } from "../../../constants";
+import { ui } from "../../../data/assetPaths";
 import "./HealthDisplay.css";
 
 type HealthDisplayProps = {

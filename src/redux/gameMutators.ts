@@ -51,7 +51,7 @@ export function explosionMutator(
   const neighborIndices = [left, right, top, bottom];
   for (const index of neighborIndices) {
     const charHere = newCharacters.find((char) => char.curCellIndex === index);
-    if (!charHere) {
+    if (!charHere || (charHere.enemyData.type === "none" && godMode)) {
       continue;
     }
 

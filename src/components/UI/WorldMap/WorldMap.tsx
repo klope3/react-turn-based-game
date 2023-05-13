@@ -3,18 +3,18 @@ import {
   clickWorldCell,
   loadWorldRegionIndex,
   toggleWorldMap,
-} from "../../redux/gameActions";
+} from "../../../redux/gameActions";
 import "./WorldMap.css";
-import { generateWorldMap } from "../../generate/world";
+import { generateWorldMap } from "../../../generate/world";
 import {
   visitAnyWorldRegion,
   worldMapCellsX,
   worldMapCellsY,
-} from "../../constants";
+} from "../../../constants";
 import { WorldMapCell } from "./WorldMapCell";
-import { GameState } from "../../types/gameStateTypes";
-import { areCellsAdjacent, getNumberArray } from "../../utility";
-import { saveGame } from "../../data/saveLoad";
+import { GameState } from "../../../types/gameStateTypes";
+import { areCellsAdjacent, getNumberArray } from "../../../utility";
+import { saveGame } from "../../../data/saveLoad";
 
 export function WorldMap() {
   const style = {
@@ -44,6 +44,9 @@ export function WorldMap() {
         areCellsAdjacent(checkIndex, visitedIndex, worldMapCellsX)
       )
     );
+  const gameMenuOpen = useSelector(
+    (state: GameState) => state.gameMode === "gameMenu"
+  );
 
   function clickGrid(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const target = e.target as HTMLElement;
@@ -75,13 +78,7 @@ export function WorldMap() {
           />
         ))}
       </div>
-      <button
-        onClick={() => {
-          dispatch(toggleWorldMap());
-        }}
-      >
-        Close
-      </button>
+      {gameMenuOpen && <div className="input-blocker"></div>}
     </div>
   );
 }

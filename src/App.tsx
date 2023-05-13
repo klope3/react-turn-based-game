@@ -1,44 +1,29 @@
+import { useSelector } from "react-redux/es/exports";
 import "./App.css";
-import { Character } from "./components/Character/Character";
-import { Grid } from "./components/Grid/Grid";
+import { Game } from "./Game";
 import { displayWidth } from "./constants";
-import { useDispatch, useSelector } from "react-redux/es/exports";
 import { GameState } from "./types/gameStateTypes";
-import { HealthDisplay } from "./components/UI/HealthDisplay";
-import { WorldMap } from "./components/UI/WorldMap";
-import { toggleWorldMap } from "./redux/gameActions";
+import { MainMenu } from "./components/UI/Menus/MainMenu";
+import { Victory } from "./components/UI/Menus/Victory";
+import { GameOver } from "./components/UI/Menus/GameOver";
+import { useEffect } from "react";
 
 function App() {
-  const style = {
-    maxWidth: `${displayWidth}px`,
-  };
-  const characters = useSelector((state: GameState) => state.activeCharacters);
-  const player = characters.find((char) => char.enemyData.type === "none");
-  const showWorldMap = useSelector((state: GameState) => state.showWorldMap);
-  const dispatch = useDispatch();
+  const gameMode = useSelector((state: GameState) => state.gameMode);
+  const mainMenu = gameMode === "mainMenu";
+  const gameEndStatus = useSelector((state: GameState) => state.gameEndStatus);
+  const victory = gameEndStatus === "won";
+  const defeat = gameEndStatus === "lost";
+  const showGame =
+    (gameMode === "play" || gameMode === "gameMenu") && !victory && !defeat;
 
   return (
     <>
-      <div className="app-container" style={style}>
-        {characters.map((char) => (
-          <Character key={char.id} data={char} />
-        ))}
-        <Grid />
-        {player && (
-          <HealthDisplay
-            healthCapacity={player.healthCapacity}
-            healthCurrent={player.health}
-          />
-        )}
-        {!player && <div>GAME OVER</div>}
-        <button
-          onClick={() => {
-            dispatch(toggleWorldMap());
-          }}
-        >
-          World Map
-        </button>
-        {showWorldMap && <WorldMap />}
+      <div className="app-container">
+        {showGame && <Game />}
+        {mainMenu && <MainMenu />}
+        {gameEndStatus === "won" && <Victory />}
+        {gameEndStatus === "lost" && <GameOver />}
       </div>
     </>
   );

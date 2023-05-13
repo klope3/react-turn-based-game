@@ -1,4 +1,4 @@
-import { characters, ui } from "../../data/assetPaths";
+import { characters, ui } from "../../../data/assetPaths";
 
 type WorldMapCellProps = {
   isSelected: boolean;

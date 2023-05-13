@@ -4,7 +4,7 @@ import {
   worldMapCellsX,
   worldMapCellsY,
 } from "../constants";
-import { loadStateFromSave } from "../data/saveLoad";
+import { rebuildStateFromSave } from "../data/saveLoad";
 import { generateCharacters } from "../generate/characters";
 import { generateCells } from "../generate/environment";
 import {
@@ -16,9 +16,11 @@ import {
   CLICK_CELL,
   CLICK_WORLD_CELL,
   ENEMY_TURN,
-  LOAD_SAVE_GAME,
   LOAD_WORLD_REGION,
   MOVE_PLAYER,
+  SET_MAIN_MENU,
+  START_PLAYING,
+  TOGGLE_GAME_MENU,
   TOGGLE_INPUT,
   TOGGLE_WORLD_MAP,
   UPDATE_CELL_OBJECTS,
@@ -27,7 +29,7 @@ import { CharacterState, GameState } from "../types/gameStateTypes";
 import { getNumberArray } from "../utility";
 import { cloneCells, cloneCharacters } from "./cloners";
 import { explosionMutator, singleEnemyMoveMutator } from "./gameMutators";
-import { getInitialState } from "./initialState";
+import { getInitialState, getNewGameState } from "./initialState";
 
 const initialState = getInitialState();
 
@@ -58,11 +60,30 @@ export function gameReducer(
       return clickWorldCellReducer(state, action);
     case LOAD_WORLD_REGION:
       return loadWorldRegionReducer(state, action);
-    case LOAD_SAVE_GAME:
-      return loadSaveGameReducer(state);
+    case TOGGLE_GAME_MENU:
+      return {
+        ...state,
+        gameMode: state.gameMode === "gameMenu" ? "play" : "gameMenu",
+      };
+    case SET_MAIN_MENU:
+      return {
+        ...state,
+        gameMode: "mainMenu",
+        gameEndStatus: "neither",
+      };
+    case START_PLAYING:
+      return startPlayingReducer();
     default:
       return state;
   }
+}
+
+function startPlayingReducer(): GameState {
+  const savedString = localStorage.getItem("save");
+  if (!savedString) {
+    return getNewGameState();
+  }
+  return rebuildStateFromSave(savedString);
 }
 
 function clickCellReducer(state: GameState, action: BasicAction): GameState {
@@ -71,16 +92,6 @@ function clickCellReducer(state: GameState, action: BasicAction): GameState {
     ...state,
     selectedCellIndex: clickedIndex,
   };
-}
-
-function loadSaveGameReducer(state: GameState): GameState {
-  const loadedState = loadStateFromSave();
-  if (!loadedState) {
-    console.log("Couldn't find any valid save data");
-    return state;
-  }
-
-  return loadedState;
 }
 
 function loadWorldRegionReducer(
@@ -145,7 +156,7 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
     getImportantWorldRegionIndices(worldMapCellsX, worldMapCellsY).finalRegion;
   const finalVictory = newCharacters.length === 1 && isFinalRegion;
   if (finalVictory) {
-    console.log("You beat the final level!");
+    localStorage.removeItem("save");
   }
 
   newPlayer.curCellIndex = playerTargetCellIndex;
@@ -157,6 +168,7 @@ function playerTurnReducer(state: GameState, action: BasicAction): GameState {
     activeCharacters: newCharacters,
     userInput: false,
     cells: newCells,
+    gameEndStatus: finalVictory ? "won" : state.gameEndStatus,
   };
 }
 
@@ -191,14 +203,17 @@ function enemyTurnReducer(state: GameState): GameState {
     }
   }
 
-  if (newPlayer.health <= 0) {
+  const defeat = newPlayer.health <= 0;
+  if (defeat) {
     newCharacters.splice(newCharacters.indexOf(newPlayer), 1);
+    localStorage.removeItem("save");
   }
 
   return {
     ...state,
     activeCharacters: newCharacters,
     cells: newCells,
+    gameEndStatus: defeat ? "lost" : state.gameEndStatus,
   };
 }
 

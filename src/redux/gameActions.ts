@@ -7,8 +7,12 @@ import {
   TOGGLE_WORLD_MAP,
   CLICK_WORLD_CELL,
   LOAD_WORLD_REGION,
-  LOAD_SAVE_GAME,
+  TOGGLE_GAME_MENU,
+  SET_MAIN_MENU,
+  SET_GAME_OVER,
+  START_PLAYING,
 } from "../types/actionTypes";
+import { GameMode } from "../types/gameStateTypes";
 
 export function clickCell(clickedIndex: number) {
   return {
@@ -62,8 +66,26 @@ export function loadWorldRegionIndex(regionIndex: number) {
   };
 }
 
-export function loadSaveGame() {
+export function toggleGameMenu() {
   return {
-    type: LOAD_SAVE_GAME,
+    type: TOGGLE_GAME_MENU,
+  };
+}
+
+export function setMainMenu() {
+  return {
+    type: SET_MAIN_MENU,
+  };
+}
+
+export function setGameOver() {
+  return {
+    type: SET_GAME_OVER,
+  };
+}
+
+export function startPlaying() {
+  return {
+    type: START_PLAYING,
   };
 }

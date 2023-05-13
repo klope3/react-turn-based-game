@@ -1,0 +1,22 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.menu button {
+  display: block;
+  padding: 15px;
+  min-width: 320px;
+  max-width: 420px;
+}
+
+.game-menu {
+  z-index: 100;
+}

@@ -10,7 +10,8 @@ import { usePlayer } from "../../utility";
 import { Cell } from "./Cell";
 import "./Grid.css";
 import { saveGame } from "../../data/saveLoad";
-import { CLICK_CELL, MOVE_PLAYER } from "../../types/actionTypes";
+import { MOVE_PLAYER } from "../../types/actionTypes";
+import { store } from "../../redux/gameStore";
 
 export function Grid() {
   const style = {
@@ -22,11 +23,13 @@ export function Grid() {
   const selectedCellIndex = useSelector(
     (state: GameState) => state.selectedCellIndex
   );
-  const userInput = useSelector((state: GameState) => state.userInput);
+  const allowGridInput = useSelector(
+    (state: GameState) => state.userInput && state.gameMode === "play"
+  );
   const player = usePlayer();
 
   function clickGrid(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (!userInput) return;
+    if (!allowGridInput) return;
 
     const actions = getClickGridActions(e, player, selectedCellIndex, cells);
     for (let i = 0; i < actions.length; i++) {
@@ -38,14 +41,20 @@ export function Grid() {
         }, delay);
       }
     }
-    const playerTookTurn = !!actions.find(
-      (action) => action.type === MOVE_PLAYER
-    );
-    if (!playerTookTurn) return;
-    //only save the game when the player has actually taken a turn
+
     const totalActionTime = actionTimeDefault * actions.length * 1000;
     setTimeout(() => {
-      saveGame();
+      const playerTookTurn = !!actions.find(
+        (action) => action.type === MOVE_PLAYER
+      );
+      if (!playerTookTurn) return;
+      //only save the game when the player has actually taken a turn
+
+      const state = store.getState();
+      const gameOver = state.gameEndStatus !== "neither";
+      if (!gameOver) {
+        saveGame();
+      }
     }, totalActionTime);
   }
 
