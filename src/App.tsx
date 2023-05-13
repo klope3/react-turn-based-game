@@ -1,12 +1,10 @@
 import { useSelector } from "react-redux/es/exports";
 import "./App.css";
 import { Game } from "./Game";
-import { displayWidth } from "./constants";
-import { GameState } from "./types/gameStateTypes";
+import { GameOver } from "./components/UI/Menus/GameOver";
 import { MainMenu } from "./components/UI/Menus/MainMenu";
 import { Victory } from "./components/UI/Menus/Victory";
-import { GameOver } from "./components/UI/Menus/GameOver";
-import { useEffect } from "react";
+import { GameState } from "./types/gameStateTypes";
 
 function App() {
   const gameMode = useSelector((state: GameState) => state.gameMode);

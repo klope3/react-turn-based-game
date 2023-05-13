@@ -3,14 +3,10 @@ import { Character } from "./components/Character/Character";
 import { Grid } from "./components/Grid/Grid";
 import { HealthDisplay } from "./components/UI/HealthDisplay/HealthDisplay";
 import { GameMenu } from "./components/UI/Menus/GameMenu";
-import {
-  setMainMenu,
-  toggleGameMenu,
-  toggleWorldMap,
-} from "./redux/gameActions";
 import { WorldMap } from "./components/UI/WorldMap/WorldMap";
-import { GameState } from "./types/gameStateTypes";
 import { displayWidth, gameBoardCellsX, gameBoardCellsY } from "./constants";
+import { toggleGameMenu, toggleWorldMap } from "./redux/gameActions";
+import { GameState } from "./types/gameStateTypes";
 
 export function Game() {
   const boardStyle = {

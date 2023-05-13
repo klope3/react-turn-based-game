@@ -1,18 +1,17 @@
 import {
-  TOGGLE_INPUT,
   CLICK_CELL,
-  ENEMY_TURN,
-  MOVE_PLAYER,
-  UPDATE_CELL_OBJECTS,
-  TOGGLE_WORLD_MAP,
   CLICK_WORLD_CELL,
+  ENEMY_TURN,
   LOAD_WORLD_REGION,
-  TOGGLE_GAME_MENU,
-  SET_MAIN_MENU,
+  MOVE_PLAYER,
   SET_GAME_OVER,
+  SET_MAIN_MENU,
   START_PLAYING,
+  TOGGLE_GAME_MENU,
+  TOGGLE_INPUT,
+  TOGGLE_WORLD_MAP,
+  UPDATE_CELL_OBJECTS,
 } from "../types/actionTypes";
-import { GameMode } from "../types/gameStateTypes";
 
 export function clickCell(clickedIndex: number) {
   return {

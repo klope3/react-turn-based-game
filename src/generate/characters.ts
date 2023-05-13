@@ -98,6 +98,7 @@ function chooseEnemyTypes(seed: number, regionIndex: number): EnemyType[] {
   while (types.length > maxEnemyCount) {
     types.pop();
   }
+  seed = seed + 1; //this is temporary to make the build error go away
 
   return types;
 }

@@ -1,20 +1,19 @@
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import {
-  clickWorldCell,
-  loadWorldRegionIndex,
-  toggleWorldMap,
-} from "../../../redux/gameActions";
-import "./WorldMap.css";
-import { generateWorldMap } from "../../../generate/world";
-import {
   visitAnyWorldRegion,
   worldMapCellsX,
   worldMapCellsY,
 } from "../../../constants";
-import { WorldMapCell } from "./WorldMapCell";
+import { saveGame } from "../../../data/saveLoad";
+import { generateWorldMap } from "../../../generate/world";
+import {
+  clickWorldCell,
+  loadWorldRegionIndex,
+} from "../../../redux/gameActions";
 import { GameState } from "../../../types/gameStateTypes";
 import { areCellsAdjacent, getNumberArray } from "../../../utility";
-import { saveGame } from "../../../data/saveLoad";
+import "./WorldMap.css";
+import { WorldMapCell } from "./WorldMapCell";
 
 export function WorldMap() {
   const style = {
