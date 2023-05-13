@@ -22,7 +22,7 @@ body {
 
 .board-container {
   position: relative;
-  flex: 1;
+  margin: auto;
 }
 
 .fill-container {

@@ -10,8 +10,13 @@ import {
 } from "./redux/gameActions";
 import { WorldMap } from "./components/UI/WorldMap/WorldMap";
 import { GameState } from "./types/gameStateTypes";
+import { displayWidth, gameBoardCellsX, gameBoardCellsY } from "./constants";
 
 export function Game() {
+  const boardStyle = {
+    aspectRatio: gameBoardCellsX / gameBoardCellsY,
+    width: displayWidth,
+  };
   const characters = useSelector((state: GameState) => state.activeCharacters);
   const player = characters.find((char) => char.enemyData.type === "none");
   const showWorldMap = useSelector((state: GameState) => state.showWorldMap);
@@ -25,7 +30,7 @@ export function Game() {
       <div className="top-bar">
         <button onClick={() => dispatch(toggleGameMenu())}>☰</button>
       </div>
-      <div className="board-container">
+      <div className="board-container" style={boardStyle}>
         {characters.map((char) => (
           <Character key={char.id} data={char} />
         ))}

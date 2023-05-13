@@ -1,6 +1,6 @@
 .grid {
   display: grid;
-  max-width: 320px;
+  margin: auto;
 }
 
 .cell {
