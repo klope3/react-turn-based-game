@@ -5,6 +5,11 @@
 * {
   box-sizing: border-box;
   font-family: 'IBM Plex Mono', monospace;
+  color: white;
+}
+
+button {
+  color: black;
 }
 
 body {
