@@ -1,4 +1,4 @@
-const assetPath = "/public/assets";
+const assetPath = "/assets";
 const charPath = `${assetPath}/characters`;
 const envPath = `${assetPath}/environment`;
 const uiPath = `${assetPath}/ui`;
