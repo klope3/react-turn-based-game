@@ -29,7 +29,9 @@ export function MainMenu() {
           </button>
         </>
       )}
-      <button onClick={() => setShowInfoMenu(true)}>Help</button>
+      {!confirmDeleteSave && (
+        <button onClick={() => setShowInfoMenu(true)}>Help</button>
+      )}
       {confirmDeleteSave && (
         <>
           <div>This will DELETE your existing save. Press "GO" to confirm.</div>
