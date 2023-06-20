@@ -26,16 +26,23 @@ import { getCellObjectData } from "./cellObjects";
 
 export const characterData: EnemyData[] = [
   {
+    displayName: "Player",
     type: "none",
+    attackType: "none",
     attackRange: 0,
+    description: "none",
     timerDirection: "none",
     imagePath: characters.player,
     chooseMovementIndex: () => 0,
     tryAttackPlayer: () => false,
   },
   {
+    displayName: "Goblin",
     type: "melee",
+    attackType: "melee",
     attackRange: 1,
+    description:
+      "A simple-minded beast that attacks humans on sight. Weak on its own, stronger in numbers.",
     timerDirection: "none",
     imagePath: characters.melee,
     chooseMovementIndex(selfState, playerState, cells) {
@@ -64,8 +71,12 @@ export const characterData: EnemyData[] = [
     },
   },
   {
+    displayName: "Oculo",
     type: "archer",
+    attackType: "projectile",
     attackRange: 4,
+    description:
+      "A scaly, skittish monster that can shoot an orb of magical energy from its single eye.",
     timerDirection: "none",
     imagePath: characters.archer,
     tryAttackPlayer(
@@ -126,8 +137,12 @@ export const characterData: EnemyData[] = [
     },
   },
   {
+    displayName: "Osso",
     type: "bomber",
+    attackType: "explosive",
     attackRange: 2,
+    description:
+      'A floating skull from the depths of the underworld. Its disembodied hands can lob concentrated magical "bombs" that damage anything nearby. The bomb attack takes several turns to charge back up.',
     timerDirection: "decrement",
     imagePath: characters.bomber,
     tryAttackPlayer(
