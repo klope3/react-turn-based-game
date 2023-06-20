@@ -1,0 +1,56 @@
+.grid-diagram {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 2px;
+  margin: auto; 
+  --cell-width: 40px;
+}
+
+.full-diagram-cell,
+.centered-diagram-cell,
+.bottom-left-diagram-cell,
+.right-diagram-cell,
+.top-right-diagram-cell {
+  position: absolute;
+}
+
+.full-diagram-cell {
+  width: var(--cell-width);
+  height: var(--cell-width);
+}
+
+.centered-diagram-cell {
+  left: var(--cell-width);
+  top: var(--cell-width);
+}
+
+.right-diagram-cell {
+  left: calc(var(--cell-width) * 2);
+  top: var(--cell-width);
+}
+
+.top-right-diagram-cell {
+  left: calc(var(--cell-width) * 2);
+  top: 0;
+}
+
+.bottom-left-diagram-cell {
+  left: 0;
+  top: calc(var(--cell-width) * 2);
+}
+
+.left-diagram-cell {
+  left: 0;
+  top: var(--cell-width);
+}
+
+.bottom-diagram-cell {
+  left: var(--cell-width);
+  top: calc(var(--cell-width) * 2);
+}
+
+.top-diagram-cell {
+  left: var(--cell-width);
+  top: 0;
+}

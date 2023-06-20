@@ -24,4 +24,9 @@ export const ui = {
   heartEmpty: `${uiPath}/heart_empty.png`,
   visited: `${uiPath}/visited.png`,
   visitable: `${uiPath}/visitable.png`,
+  arrowOrtho: `${uiPath}/arrow_ortho.png`,
+  arrowDiag: `${uiPath}/arrow_diag.png`,
+  arrowDiagRed: `${uiPath}/arrow_diag_red.png`,
+  alert: `${uiPath}/alert.png`,
+  victory: `${uiPath}/victory.png`,
 };

@@ -1,11 +1,13 @@
 import { useDispatch } from "react-redux";
 import { startPlaying } from "../../../redux/gameActions";
 import { useState } from "react";
+import { useApp } from "../../../AppProvider";
 
 export function MainMenu() {
   const dispatch = useDispatch();
   const saveExists = localStorage.getItem("save") !== null;
   const [confirmDeleteSave, setConfirmDeleteSave] = useState(false);
+  const { setShowInfoMenu } = useApp();
   // TODO: "New Game" should open a new screen that allows the user to choose seed, world size, difficulty, etc.
   return (
     <div className="menu">
@@ -27,6 +29,7 @@ export function MainMenu() {
           </button>
         </>
       )}
+      <button onClick={() => setShowInfoMenu(true)}>Help</button>
       {confirmDeleteSave && (
         <>
           <div>This will DELETE your existing save. Press "GO" to confirm.</div>
