@@ -5,6 +5,8 @@ import { GameOver } from "./components/UI/Menus/GameOver";
 import { MainMenu } from "./components/UI/Menus/MainMenu";
 import { Victory } from "./components/UI/Menus/Victory";
 import { GameState } from "./types/gameStateTypes";
+import { useApp } from "./AppProvider";
+import { InfoMain } from "./components/UI/Menus/Info/InfoMain";
 
 function App() {
   const gameMode = useSelector((state: GameState) => state.gameMode);
@@ -14,16 +16,16 @@ function App() {
   const defeat = gameEndStatus === "lost";
   const showGame =
     (gameMode === "play" || gameMode === "gameMenu") && !victory && !defeat;
+  const { showInfoMenu } = useApp();
 
   return (
-    <>
-      <div className="app-container">
-        {showGame && <Game />}
-        {mainMenu && <MainMenu />}
-        {gameEndStatus === "won" && <Victory />}
-        {gameEndStatus === "lost" && <GameOver />}
-      </div>
-    </>
+    <div className="app-container">
+      {showGame && <Game />}
+      {mainMenu && <MainMenu />}
+      {showInfoMenu && <InfoMain />}
+      {gameEndStatus === "won" && <Victory />}
+      {gameEndStatus === "lost" && <GameOver />}
+    </div>
   );
 }
 

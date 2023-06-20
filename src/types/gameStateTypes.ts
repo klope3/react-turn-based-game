@@ -22,8 +22,11 @@ export type CharacterState = {
 };
 
 export type EnemyData = {
+  displayName: string;
   type: EnemyType;
+  attackType: AttackType;
   attackRange: number;
+  description: string;
   timerDirection: ValueChangeDirection;
   imagePath: string;
   tryAttackPlayer: (
@@ -60,6 +63,8 @@ export type CellObject = {
 export type CellObjectType = "rock" | "bomb";
 
 export type EnemyType = "none" | "melee" | "archer" | "bomber";
+
+export type AttackType = "none" | "melee" | "projectile" | "explosive";
 
 type ValueChangeDirection = "increment" | "decrement" | "none";
 

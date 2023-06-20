@@ -1,0 +1,37 @@
+.unit-cards-parent {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.unit-card {
+  width: 48px;
+  height: 48px;
+  background-color: var(--color-bg-2);
+  border-radius: 5px;
+}
+
+.unit-data-display {
+  max-width: 480px;
+  min-width: 320px;
+  padding: 20px;
+  background-color: var(--color-bg);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 100;
+}
+
+.unit-data-display-top-section {
+  display: flex;
+  justify-content: center;
+  text-align: right;
+  align-items: center;
+}
+
+.unit-data-description {
+  margin-top: 20px;
+}
