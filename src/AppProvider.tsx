@@ -20,7 +20,7 @@ export function useApp() {
 }
 
 export function AppProvider({ children }: AppProviderProps) {
-  const [showInfoMenu, setShowInfoMenu] = useState(true);
+  const [showInfoMenu, setShowInfoMenu] = useState(false);
 
   return (
     <AppContext.Provider value={{ showInfoMenu, setShowInfoMenu }}>
